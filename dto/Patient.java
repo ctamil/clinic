@@ -1,5 +1,7 @@
 package dto;
 
+import java.util.Calendar;
+
 public class Patient {
 
 	private String name;
@@ -9,7 +11,27 @@ public class Patient {
 	private String city;
 	private String state;
 	private String country;
+	private Calendar dob;
+	private int age;
 	
+	public int getAge(){
+		return age;
+	}
+	public void setDob(int date, int month, int year){
+		dob = Calendar.getInstance();
+		dob.set(Calendar.DATE, date);
+		dob.set(Calendar.MONTH, month);
+		dob.set(Calendar.YEAR, year);
+		calculateAge(Calendar.getInstance().get(Calendar.YEAR), year);
+	}
+	private void calculateAge(int currYear, int dobYear) {
+		age = currYear - dobYear;
+	}
+	public void setDob(Calendar cal){
+		if(cal == null) return;
+		this.dob = cal;
+		calculateAge(Calendar.getInstance().get(Calendar.YEAR), cal.get(Calendar.YEAR));
+	}
 	public int getPinCode() {
 		return pinCode;
 	}
@@ -17,8 +39,7 @@ public class Patient {
 		this.pinCode = pinCode;
 	}
 	public Patient(String name, long contactNo, int pinCode, String address,
-			String city, String state, String country) {
-		super();
+			String city, String state, String country, Calendar dob) {
 		setName(name);
 		setContactNo(contactNo);
 		setPinCode(pinCode);
@@ -26,6 +47,17 @@ public class Patient {
 		setCity(city);
 		setState(state);
 		setCountry(country);
+		setDob(dob);
+	}
+	public Patient(String name, long contactNo, int pinCode, String address,
+			String city, String state, String country, int date, int month, int year) {
+		this(name, contactNo, pinCode, address, city, state, country, null);
+		Calendar cal = Calendar.getInstance();
+		cal.set(Calendar.DATE, date);
+		cal.set(Calendar.MONTH, month);
+		cal.set(Calendar.YEAR, year);
+		setDob(cal);
+		
 	}
 	@Override
 	public int hashCode() {
@@ -91,13 +123,12 @@ public class Patient {
 		country = country.toLowerCase();
 		this.country = country;
 	}
-	
 	@Override
 	public String toString() {
 		return "Patient [name=" + name + ", contactNo=" + contactNo
 				+ ", pinCode=" + pinCode + ", address=" + address + ", city="
-				+ city + ", state=" + state + ", country=" + country + "]";
+				+ city + ", state=" + state + ", country=" + country + ", dob="
+				+ dob + ", age=" + age + "]";
 	}
-
 	
 }

@@ -12,6 +12,9 @@ public class Item {
 		this.price = price;
 		this.quantity = quantity;
 	}
+	public float getTotal(){
+		return getPrice() * getQuantity();
+	}
 	public String getName() {
 		return name;
 	}
