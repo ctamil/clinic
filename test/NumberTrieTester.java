@@ -1,12 +1,12 @@
 package test;
 
-import ds.NumberTrie;
+import ds.TerenaryTrie;
 import ds.Traveller;
 
 public class NumberTrieTester {
 
 	public static void main(String[] args) {
-		NumberTrie numbers = new NumberTrie();
+		TerenaryTrie numbers = new TerenaryTrie();
 		numbers.add("1234");
 		numbers.add("3567");
 		numbers.add("1233");
