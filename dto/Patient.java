@@ -5,6 +5,7 @@ import java.util.Calendar;
 public class Patient {
 
 	private String name;
+	private Boolean isMale;
 	private long contactNo;
 	private int pinCode;
 	private String address;
@@ -13,7 +14,14 @@ public class Patient {
 	private String country;
 	private Calendar dob;
 	private int age;
+	private String notes;
 	
+	public String getNotes() {
+		return notes;
+	}
+	public void setNotes(String notes) {
+		this.notes = notes;
+	}
 	public int getAge(){
 		return age;
 	}
@@ -123,12 +131,10 @@ public class Patient {
 		country = country.toLowerCase();
 		this.country = country;
 	}
-	@Override
-	public String toString() {
-		return "Patient [name=" + name + ", contactNo=" + contactNo
-				+ ", pinCode=" + pinCode + ", address=" + address + ", city="
-				+ city + ", state=" + state + ", country=" + country + ", dob="
-				+ dob + ", age=" + age + "]";
+	public Boolean getIsMale() {
+		return isMale;
 	}
-	
+	public void setIsMale(Boolean isMale) {
+		this.isMale = isMale;
+	}
 }
