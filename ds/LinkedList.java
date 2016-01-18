@@ -104,4 +104,9 @@ public class LinkedList implements Container, Traveller{
 		return toString.toString();
 	}
 
+	@Override
+	public Object get(Object obj) {
+		return obj;
+	}
+
 }

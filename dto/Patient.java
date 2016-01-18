@@ -16,6 +16,8 @@ public class Patient {
 	private int age;
 	private String notes;
 	
+	public Patient(){}
+	
 	public String getNotes() {
 		return notes;
 	}
@@ -47,7 +49,7 @@ public class Patient {
 		this.pinCode = pinCode;
 	}
 	public Patient(String name, long contactNo, int pinCode, String address,
-			String city, String state, String country, Calendar dob) {
+			String city, String state, String country, Calendar dob, boolean isMale, String notes) {
 		setName(name);
 		setContactNo(contactNo);
 		setPinCode(pinCode);
@@ -58,8 +60,8 @@ public class Patient {
 		setDob(dob);
 	}
 	public Patient(String name, long contactNo, int pinCode, String address,
-			String city, String state, String country, int date, int month, int year) {
-		this(name, contactNo, pinCode, address, city, state, country, null);
+			String city, String state, String country, int date, int month, int year, boolean isMale, String notes) {
+		this(name, contactNo, pinCode, address, city, state, country, null, isMale, notes);
 		Calendar cal = Calendar.getInstance();
 		cal.set(Calendar.DATE, date);
 		cal.set(Calendar.MONTH, month);
@@ -136,5 +138,10 @@ public class Patient {
 	}
 	public void setIsMale(Boolean isMale) {
 		this.isMale = isMale;
+	}
+	
+	@Override
+	public String toString() {
+		return String.valueOf(contactNo);
 	}
 }

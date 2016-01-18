@@ -8,6 +8,7 @@ public class TerenaryTrie implements Container{
 	private class Node{
 		private boolean isPresent = false;
 		private Character data =  null;
+		private Object userData = null; 
 		private Node left, middle, right;
 		private Node(){
 		}
@@ -56,30 +57,31 @@ public class TerenaryTrie implements Container{
 
 	
 	@Override	
-	public void add(Object o) {
+	public void add(Object obj) {
 		if(head.middle == null) head.middle = new Node();
-		add(o.toString(), 0, head.middle);
+		add(obj.toString(), 0, head.middle, obj);
 	}
 
-	private void add(String string, int index, Node node) {
+	private void add(String string, int index, Node node, Object obj) {
 		if(index == string.length()-1){
 			if(node.data == null) node.data = string.charAt(index);
 			if(node.data == string.charAt(index)){
 				size++;
 				node.isPresent = true;
+				node.userData = obj;
 				return;
 			}
 		}
 		if(node.data == null) node.data = string.charAt(index);
 		if(node.data == string.charAt(index)){ //middle
 			if(node.middle == null) node.middle = new Node();
-			add(string, index+1, node.middle);
+			add(string, index+1, node.middle, obj);
 		}else if(node.data > string.charAt(index)){ //left
 			if(node.left == null) node.left = new Node();
-			add(string, index, node.left);
+			add(string, index, node.left, obj);
 		}else{ //right
 			if(node.right == null) node.right = new Node();
-			add(string, index, node.right);
+			add(string, index, node.right, obj);
 		}
 	}
 
@@ -92,6 +94,7 @@ public class TerenaryTrie implements Container{
 		if(string.length()-1 == index){//in last char
 			if(node.data == string.charAt(index) && node.isPresent){
 				node.isPresent = false;
+				node.userData = null;
 				size--;
 				return;
 			}
@@ -102,6 +105,25 @@ public class TerenaryTrie implements Container{
 			else remove(string, index, node.right);
 		}
 	}
+	
+	@Override
+	public Object get(Object obj) {
+		if(contains(obj)) return get(obj.toString(), 0, head.middle);
+		else return null;
+	}
+
+	private Object get(String string, int index, Node node) {
+		if(node == null || node.data == null) return null;
+		if(string.length() == index+1){
+			if(node.data == string.charAt(index)) return node.userData;
+			else return null;
+		}else{
+			if(node.data == string.charAt(index)) return contains(string, index+1, node.middle);
+			else if(node.data < string.charAt(index)) return contains(string, index, node.left);
+			else return contains(string, index, node.right);
+		}	
+	}
+
 
 	@Override
 	public boolean contains(Object o) {
@@ -126,5 +148,7 @@ public class TerenaryTrie implements Container{
 		head = new Node();
 		size = 0;
 	}
+
+	
 
 }

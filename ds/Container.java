@@ -10,5 +10,6 @@ public interface Container {
 	public void remove(Object o);
 	public boolean contains(Object o);
 	public void clear();
+	public Object get(Object obj);
 	
 }

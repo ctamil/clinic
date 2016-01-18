@@ -7,6 +7,7 @@ public class NumberTrie implements Container, Traveller{
 	
 	private class Node{
 		private boolean isPresent = false;
+		private Object data;
 		private Node next[] = new Node[10];
 	}
 	
@@ -49,23 +50,21 @@ public class NumberTrie implements Container, Traveller{
 			}
 		}
 	}
-	
-
-
 
 	@Override
 	public void add(Object o) {
-		add(o.toString(), 0, head);
+		add(o.toString(), 0, head, o);
 	}
 
-	private void add(String string, int stringIndex, Node next) {
+	private void add(String string, int stringIndex, Node next, Object data) {
 		int nodeIndex = getIndex(string, stringIndex);
 		createNode(next, nodeIndex);
 		if(string.length() == stringIndex+1){
 			next.next[nodeIndex].isPresent = true;
+			next.next[nodeIndex].data = data;
 			size++;
 		}else{
-			add(string, stringIndex+1, next.next[nodeIndex]);
+			add(string, stringIndex+1, next.next[nodeIndex], data);
 		}
 		
 	}
@@ -107,8 +106,23 @@ public class NumberTrie implements Container, Traveller{
 	}
 
 	@Override
-	public boolean contains(Object o) {
-		return contains(o.toString(), 0, head);
+	public Object get(Object obj) {
+		if(contains(obj))  return get(obj.toString(), 0, head);
+		else return null;
+	}
+	
+	private Object get(String string, int stringIndex, Node next) {
+		if(next == null) return null;
+		int nodeIndex = getIndex(string, stringIndex);
+		if(string.length() == stringIndex+1){
+			if(next.next[nodeIndex] != null) return next.next[nodeIndex].data;
+			else return null;
+		}else return contains(string, stringIndex+1, next.next[nodeIndex]);
+	}
+
+	@Override
+	public boolean contains(Object obj) {
+		return contains(obj.toString(), 0, head);
 	}
 
 	private boolean contains(String string, int stringIndex, Node next) {
@@ -119,6 +133,8 @@ public class NumberTrie implements Container, Traveller{
 			else return false;
 		}else return contains(string, stringIndex+1, next.next[nodeIndex]);
 	}
+	
+	
 
 	@Override
 	public void clear() {
@@ -135,4 +151,6 @@ public class NumberTrie implements Container, Traveller{
 	public Object next() {
 		return trieTraveller.next();
 	}
+
+	
 }
