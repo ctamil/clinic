@@ -76,7 +76,7 @@ public class TerenaryTrie implements Container{
 		if(node.data == string.charAt(index)){ //middle
 			if(node.middle == null) node.middle = new Node();
 			add(string, index+1, node.middle, obj);
-		}else if(node.data > string.charAt(index)){ //left
+		}else if(string.charAt(index) < node.data){ //left
 			if(node.left == null) node.left = new Node();
 			add(string, index, node.left, obj);
 		}else{ //right
@@ -101,7 +101,7 @@ public class TerenaryTrie implements Container{
 		}
 		if(index < string.length()){
 			if(node.data == string.charAt(index)) remove(string, index+1, node.middle);
-			else if(node.data < string.charAt(index)) remove(string, index, node.left);
+			else if(string.charAt(index) < node.data) remove(string, index, node.left);
 			else remove(string, index, node.right);
 		}
 	}
@@ -114,14 +114,11 @@ public class TerenaryTrie implements Container{
 
 	private Object get(String string, int index, Node node) {
 		if(node == null || node.data == null) return null;
-		if(string.length() == index+1){
+		if(string.length() == index+1)
 			if(node.data == string.charAt(index)) return node.userData;
-			else return null;
-		}else{
-			if(node.data == string.charAt(index)) return contains(string, index+1, node.middle);
-			else if(node.data < string.charAt(index)) return contains(string, index, node.left);
-			else return contains(string, index, node.right);
-		}	
+		if(node.data == string.charAt(index)) return contains(string, index+1, node.middle);
+		else if(string.charAt(index) < node.data) return contains(string, index, node.left);
+		else return contains(string, index, node.right);
 	}
 
 
@@ -134,13 +131,10 @@ public class TerenaryTrie implements Container{
 		if(node == null || node.data == null) return false;
 		if(string.length() == index+1){
 			if(node.data == string.charAt(index)) return node.isPresent;
-			else return false;
-		}else{
-			if(node.data == string.charAt(index)) return contains(string, index+1, node.middle);
-			else if(node.data < string.charAt(index)) return contains(string, index, node.left);
-			else return contains(string, index, node.right);
 		}
-				
+		if(node.data == string.charAt(index)) return contains(string, index+1, node.middle);
+		else if(string.charAt(index) < node.data) return contains(string, index, node.left);
+		else return contains(string, index, node.right);
 	}
 
 	@Override

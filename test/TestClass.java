@@ -13,7 +13,7 @@ import dto.User;
 public class TestClass {
 	
 	public static void main(String ...a){
-		Patient logesh = new Patient("logesh", 999995798, 641006, "ganapthy", null, null, null, 6, 6, 1994, true, null);
+		Patient logesh = new Patient("logesh", 999995798, null, "ganapthy", null, null, null, 6, 6, 1994, true, null);
 		Item item1 = new Item("item1", 25, 2);
 		Item item2 = new Item("item2", 10, 3);
 		Item item3 = new Item("item2", 30, 1);

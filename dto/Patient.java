@@ -1,5 +1,6 @@
 package dto;
 
+import java.sql.Date;
 import java.util.Calendar;
 
 public class Patient {
@@ -7,7 +8,7 @@ public class Patient {
 	private String name;
 	private Boolean isMale;
 	private long contactNo;
-	private int pinCode;
+	private String pinCode;
 	private String address;
 	private String city;
 	private String state;
@@ -27,6 +28,10 @@ public class Patient {
 	public int getAge(){
 		return age;
 	}
+	public Date getDob(){
+		Date date = new Date(dob.getTimeInMillis());
+		return date;
+	}
 	public void setDob(int date, int month, int year){
 		dob = Calendar.getInstance();
 		dob.set(Calendar.DATE, date);
@@ -42,13 +47,13 @@ public class Patient {
 		this.dob = cal;
 		calculateAge(Calendar.getInstance().get(Calendar.YEAR), cal.get(Calendar.YEAR));
 	}
-	public int getPinCode() {
+	public String getPinCode() {
 		return pinCode;
 	}
-	public void setPinCode(int pinCode) {
+	public void setPinCode(String pinCode) {
 		this.pinCode = pinCode;
 	}
-	public Patient(String name, long contactNo, int pinCode, String address,
+	public Patient(String name, long contactNo, String pinCode, String address,
 			String city, String state, String country, Calendar dob, boolean isMale, String notes) {
 		setName(name);
 		setContactNo(contactNo);
@@ -58,8 +63,9 @@ public class Patient {
 		setState(state);
 		setCountry(country);
 		setDob(dob);
+		setIsMale(isMale);
 	}
-	public Patient(String name, long contactNo, int pinCode, String address,
+	public Patient(String name, long contactNo, String pinCode, String address,
 			String city, String state, String country, int date, int month, int year, boolean isMale, String notes) {
 		this(name, contactNo, pinCode, address, city, state, country, null, isMale, notes);
 		Calendar cal = Calendar.getInstance();
@@ -113,7 +119,7 @@ public class Patient {
 		return city;
 	}
 	public void setCity(String city) {
-		if(city == null || state.equals("")) city = "coimbatore";
+		if(city == null || city.equals("")) city = "coimbatore";
 		city = city.toLowerCase();
 		this.city = city;
 	}
