@@ -87,4 +87,13 @@ public class PatientTableProcessing {
 		}
 	}
 
+	public void remove(Patient patient) {
+		try(Statement stmt = connection.createStatement()) {
+			stmt.executeUpdate("delete from patient where contact_no = '"+patient.getContactNo()+"'");
+		}catch (SQLException e) {
+			JOptionPane.showMessageDialog(null, "Error in Deleting Patient");
+			e.printStackTrace();
+		}
+	}
+
 }

@@ -27,9 +27,7 @@ import java.util.regex.Pattern;
 
 public class RegisterationFrame extends JFrame {
 
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 4520649564739812454L;
 	private JPanel contentPane;
 	private JPanel panel;

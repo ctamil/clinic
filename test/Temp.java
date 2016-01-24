@@ -9,8 +9,8 @@ public class Temp {
 
 	public static void main(String[] args) {
 		Random r = new Random();
-		
-		for(int i=0; i<10000000; i++){
+		System.out.println("Started");
+		for(int i=0; i<10000; i++){
 			Patient p = new Patient("logesh", 0, "641006", "ganapthy", "", "", "", 6, 6, 1994, true, "");
 			long val = Math.abs(r.nextLong());
 			if(val > 9999999999l) val %= 10e9;
@@ -20,7 +20,6 @@ public class Temp {
 					PatientInfo.getInstance().add(p);
 			else System.out.println("Number Already Exists: "+val);
 		}
-		
+		System.out.println("Completed");
 	}
-
 }

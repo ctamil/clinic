@@ -3,7 +3,9 @@ package storage;
 import database.PatientTableProcessing;
 import ds.Container;
 import ds.NumberTrie;
+import ds.PrefixSearch;
 import ds.TerenaryTrie;
+import ds.Traveller;
 import dto.Patient;
 
 public class PatientInfo {
@@ -17,6 +19,7 @@ public class PatientInfo {
 	private PatientInfo() {
 		table = new PatientTableProcessing();
 		size = table.getSize();
+		System.out.println("Size: "+size);
 		if(size <= thershould) patients = new NumberTrie();
 		else patients = new TerenaryTrie();
 		table.addToContainer(patients);
@@ -28,13 +31,26 @@ public class PatientInfo {
 		return PATIENT_INFO;
 	}
 	
+	public Patient get(String number){
+		return (Patient) patients.get(number);
+	}
+	
 	public boolean add(Patient patient){
 		patients.add(patient); //added to container
 		return table.addToTable(patient); //added to database
 	}
 	
+	public void delete(Patient patient){
+		patients.remove(patient);
+		table.remove(patient);
+	}
+	
 	public boolean contains(String contact){
 		return patients.contains(contact);
+	}
+	
+	public Traveller prefix(String number){
+		return ((PrefixSearch)patients).prefix(number);
 	}
 	
 }

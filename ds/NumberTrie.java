@@ -1,6 +1,6 @@
 package ds;
 
-public class NumberTrie implements Container, Traveller{
+public class NumberTrie implements Container, Traveller, PrefixSearch{
 	private Node head = null;
 	private int size;
 	private Traveller trieTraveller;
@@ -90,8 +90,7 @@ public class NumberTrie implements Container, Traveller{
 
 	@Override
 	public void remove(Object o) {
-		if(contains(o))
-		remove(o.toString(), 0, head);
+		if(contains(o)) remove(o.toString(), 0, head);
 	}
 
 	private void remove(String string, int stringIndex, Node next) {
@@ -117,7 +116,7 @@ public class NumberTrie implements Container, Traveller{
 		if(string.length() == stringIndex+1){
 			if(next.next[nodeIndex] != null) return next.next[nodeIndex].data;
 			else return null;
-		}else return contains(string, stringIndex+1, next.next[nodeIndex]);
+		}else return get(string, stringIndex+1, next.next[nodeIndex]);
 	}
 
 	@Override
@@ -133,8 +132,6 @@ public class NumberTrie implements Container, Traveller{
 			else return false;
 		}else return contains(string, stringIndex+1, next.next[nodeIndex]);
 	}
-	
-	
 
 	@Override
 	public void clear() {
@@ -152,5 +149,28 @@ public class NumberTrie implements Container, Traveller{
 		return trieTraveller.next();
 	}
 
-	
+	@Override
+	public Traveller prefix(String number) {
+		LinkedList list = new LinkedList();
+		prefixSearch(list, findNode(0, number, head));
+		return list.traveller();
+	}
+
+	private void prefixSearch(LinkedList list,
+			Node next) {
+		if(next == null) return;
+		if(next.isPresent) list.add(next.data);
+		for(int nodeIndex = 0; nodeIndex < 10; nodeIndex++){
+			prefixSearch(list, next.next[nodeIndex]);
+		}
+	}
+
+	private Node findNode(int stringIndex, String number, Node next){
+		if(next == null) return null;
+		int nodeIndex = getIndex(number, stringIndex);
+		if(number.length() == stringIndex+1){
+			if(next.next[nodeIndex] != null ) return next.next[nodeIndex];
+			else return null;
+		}else return findNode(stringIndex+1, number, next.next[nodeIndex]);
+	}
 }

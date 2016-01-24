@@ -1,7 +1,6 @@
 package test;
 
-import ds.TerenaryTrie;
-import ds.Traveller;
+import ds.*;
 
 public class NumberTrieTester {
 
@@ -9,29 +8,18 @@ public class NumberTrieTester {
 		TerenaryTrie numbers = new TerenaryTrie();
 		numbers.add("1234");
 		numbers.add("3567");
-		numbers.add("1233");
-		
-		System.out.println("contains : 1234: " + numbers.contains("1234"));
-		System.out.println("contains : 7614: " + numbers.contains("7614"));
-		
-		
-		numbers.add("7614");
-		numbers.add("4564");
-		numbers.remove("1234");
-		
-		System.out.println("contains : 1234: " + numbers.contains("1234"));
-		System.out.println("contains : 3546: " + numbers.contains("3546"));
+		numbers.add("1333");
+		numbers.add("1222");
+		numbers.add("1235");
+		numbers.add("1323");
 		
 		System.out.println("size: "+numbers.size());
 		
-		Traveller trav = numbers.traveller();
+		Traveller trav = numbers.prefix("1222");
 		System.out.println("Traveller running");
 		while(trav.hasNext()){
 			System.out.println(trav.next());
 		}
-		
-		numbers.clear();
-		System.out.println("contains : 1234: " + numbers.contains("1234"));
 		
 	}
 

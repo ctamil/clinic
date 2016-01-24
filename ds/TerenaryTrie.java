@@ -1,6 +1,6 @@
 package ds;
 
-public class TerenaryTrie implements Container{
+public class TerenaryTrie implements Container, PrefixSearch{
 
 	private int size = 0;
 	private Node head;
@@ -36,23 +36,18 @@ public class TerenaryTrie implements Container{
 
 	public LinkedList toLinkedList() {
 		LinkedList list = new LinkedList();
-		prefixSearchAndAdd(list, new StringBuilder(), head.middle);
+		prefixSearchAndAdd(list, head.middle);
 		return list;
 	}
 	
 
-	private void prefixSearchAndAdd(LinkedList list,
-			StringBuilder stringBuilder, Node node) {
+	private void prefixSearchAndAdd(LinkedList list, Node node) {
 		if(node == null || node.data == null) return;
-		prefixSearchAndAdd(list, stringBuilder, node.left);
 		
-		//only the middle node has datas.
-		stringBuilder.append(node.data); //data added to string
-		if(node.isPresent) list.add(stringBuilder.toString()); //data added to linked list.
-		prefixSearchAndAdd(list, stringBuilder, node.middle);// move to next node
-		stringBuilder.deleteCharAt(stringBuilder.length()-1); //removed the data.
-		
-		prefixSearchAndAdd(list, stringBuilder, node.right);
+		prefixSearchAndAdd(list, node.left);
+		if(node.isPresent) list.add(node.userData); //data added to linked list.
+		prefixSearchAndAdd(list, node.middle);// move to next node
+		prefixSearchAndAdd(list, node.right);
 	}
 
 	
@@ -116,9 +111,9 @@ public class TerenaryTrie implements Container{
 		if(node == null || node.data == null) return null;
 		if(string.length() == index+1)
 			if(node.data == string.charAt(index)) return node.userData;
-		if(node.data == string.charAt(index)) return contains(string, index+1, node.middle);
-		else if(string.charAt(index) < node.data) return contains(string, index, node.left);
-		else return contains(string, index, node.right);
+		if(node.data == string.charAt(index)) return get(string, index+1, node.middle);
+		else if(string.charAt(index) < node.data) return get(string, index, node.left);
+		else return get(string, index, node.right);
 	}
 
 
@@ -142,6 +137,41 @@ public class TerenaryTrie implements Container{
 		head = new Node();
 		size = 0;
 	}
+
+	@Override
+	public Traveller prefix(String number) {
+		LinkedList list = new LinkedList();
+		Object value = get(number);
+		if(value!=null) list.add(value);
+		prefixSearch(list, findNode(0, number, head.middle));
+		return list.traveller();
+	}
+	
+	private void prefixSearch(LinkedList linkedList, Node node) {
+		if(node == null || node.data == null) return;
+		
+		prefixSearch(linkedList, node.left);
+		if(node.isPresent) linkedList.add(node.userData);
+		prefixSearch(linkedList, node.middle);
+		prefixSearch(linkedList, node.right);
+	}
+
+	private Node findNode(int index, String number, Node node) {
+		if(node == null || node.data == null) return null;
+		
+		if(index == number.length()-1){
+			if(node.data == number.charAt(index)) 
+				return node.middle;
+		}
+		
+		if(node.data == number.charAt(index)) return findNode(index+1, number, node.middle);
+		else if(number.charAt(index) < node.data) return findNode(index, number, node.left);
+		else return findNode(index, number, node.right);
+	}
+
+	
+	
+	
 
 	
 

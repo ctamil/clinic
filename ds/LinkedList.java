@@ -109,4 +109,6 @@ public class LinkedList implements Container, Traveller{
 		return obj;
 	}
 
+	
+
 }
