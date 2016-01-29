@@ -25,7 +25,7 @@ public class PatientTableProcessing {
 	public int getSize() {
 		ResultSet result = null;
 		try(Statement stmt = connection.createStatement()) {
-			result = stmt.executeQuery("select count(contact_no) from patient;");
+			result = stmt.executeQuery("select count(*) from patient;");
 			if(result.first()) return result.getInt(1);
 		} catch (SQLException e) {
 			JOptionPane.showMessageDialog(null, "Error in Patien table processing");

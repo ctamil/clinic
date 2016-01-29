@@ -1,14 +1,11 @@
 package test;
 
-import java.util.Random;
 
-import storage.PatientInfo;
-import dto.Patient;
 
 public class Temp {
 
 	public static void main(String[] args) {
-		Random r = new Random();
+		/*Random r = new Random();
 		System.out.println("Started");
 		for(int i=0; i<10000; i++){
 			Patient p = new Patient("logesh", 0, "641006", "ganapthy", "", "", "", 6, 6, 1994, true, "");
@@ -20,6 +17,8 @@ public class Temp {
 					PatientInfo.getInstance().add(p);
 			else System.out.println("Number Already Exists: "+val);
 		}
-		System.out.println("Completed");
+		System.out.println("Completed");*/
+		
+		System.out.println( System.getProperty("user.dir"));
 	}
 }

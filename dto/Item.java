@@ -1,16 +1,32 @@
 package dto;
 
-public class Item {
+public class Item implements Cloneable{
 	
 	private String name;
 	private float price;
 	private int quantity;
 	
+	@Override
+	public Item clone() {
+		Item clone = null;
+		try {
+			clone = (Item)super.clone();
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+		}
+		clone.setName(getName());
+		clone.setQuantity(getQuantity());
+		clone.setPrice(getPrice());
+		return clone;
+	}
+	
 	public Item(String name, float price, int quantity) {
 		super();
-		this.name = name;
-		this.price = price;
-		this.quantity = quantity;
+		setName(name);
+		setPrice(price);
+		setQuantity(quantity);
+	}
+	public Item() {
 	}
 	public float getTotal(){
 		return getPrice() * getQuantity();
@@ -60,12 +76,10 @@ public class Item {
 			return false;
 		return true;
 	}
+	
 	@Override
 	public String toString() {
-		return "Item [name=" + name + ", price=" + price + ", quantity="
-				+ quantity + "]";
+		return getName();
 	}
-	
-	
 	
 }

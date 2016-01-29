@@ -24,7 +24,7 @@ public class PatientViewFrame extends JFrame {
 	 * Create the frame.
 	 */
 	public PatientViewFrame(Patient patient) {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 552, 494);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -37,7 +37,7 @@ public class PatientViewFrame extends JFrame {
 		
 		JLabel lblName = new JLabel(patient.getName());
 		lblName.setFont(new Font("Tahoma", Font.BOLD, 14));
-		lblName.setBounds(10, 11, 250, 14);
+		lblName.setBounds(10, 11, 250, 28);
 		panel.add(lblName);
 		
 		JLabel lblContact = new JLabel("Contact: "+patient.getContactNo());
@@ -68,12 +68,8 @@ public class PatientViewFrame extends JFrame {
 		label_3.setBounds(10, 230, 250, 14);
 		panel.add(label_3);
 		
-		JLabel label_4 = new JLabel("Address: "+patient.getAddress());
-		label_4.setBounds(10, 255, 250, 14);
-		panel.add(label_4);
-		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 280, 506, 151);
+		scrollPane.setBounds(10, 347, 506, 84);
 		panel.add(scrollPane);
 		
 		JLabel label_5 = new JLabel("Addition Info: ");
@@ -81,5 +77,15 @@ public class PatientViewFrame extends JFrame {
 		
 		JLabel additionalInfo = new JLabel(patient.getNotes());
 		scrollPane.setViewportView(additionalInfo);
+		
+		JScrollPane scrollPane_1 = new JScrollPane();
+		scrollPane_1.setBounds(10, 255, 506, 81);
+		panel.add(scrollPane_1);
+		
+		JLabel label_4 = new JLabel("");
+		scrollPane_1.setViewportView(label_4);
+		
+		JLabel lblAddress = new JLabel("Address:");
+		scrollPane_1.setColumnHeaderView(lblAddress);
 	}
 }

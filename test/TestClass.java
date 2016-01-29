@@ -17,7 +17,7 @@ public class TestClass {
 		Item item1 = new Item("item1", 25, 2);
 		Item item2 = new Item("item2", 10, 3);
 		Item item3 = new Item("item2", 30, 1);
-		User user = new User("Tamil", "1234");
+		User user = new User("Tamil");
 		
 		Bill bill = new Bill(logesh, user, 1);
 		bill.addItem(item1);

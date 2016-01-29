@@ -1,7 +1,6 @@
 package frames;
 
 import java.awt.BorderLayout;
-import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -43,28 +42,14 @@ public class RegisterationFrame extends JFrame {
 	private JRadioButton rdbtnMale;
 	private JRadioButton rdbtnFemale;
 	private JTextField txtPinCode;
-
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					RegisterationFrame frame = new RegisterationFrame();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+	private JButton btnBack;
+	private JButton btnReset;
 
 	/**
 	 * Create the frame.
 	 */
 	public RegisterationFrame() {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 552, 641);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -124,8 +109,10 @@ public class RegisterationFrame extends JFrame {
 		btnRegister.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if(isValidUserData()) 
-					if(register())
-						dispose();
+					if(register()){
+						JOptionPane.showMessageDialog(panel, "Registeration Completed");
+						reset();
+					}
 				else JOptionPane.showMessageDialog(null, "Registration Not Completed");
 			}
 		});
@@ -193,7 +180,31 @@ public class RegisterationFrame extends JFrame {
 		txtPinCode.setBounds(219, 256, 237, 20);
 		panel.add(txtPinCode);
 		
+		btnBack = new JButton("Back");
+		btnBack.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				new NavigationFrame().setVisible(true);
+				dispose();
+			}
+		});
+		btnBack.setBounds(342, 553, 114, 23);
+		panel.add(btnBack);
 		
+		btnReset = new JButton("Reset");
+		btnReset.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				reset();
+			}
+		});
+		btnReset.setBounds(181, 553, 138, 23);
+		panel.add(btnReset);
+		
+		
+	}
+	
+	private void reset(){
+		dispose();
+		new RegisterationFrame().setVisible(true);
 	}
 	
 	private boolean register() {

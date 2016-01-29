@@ -14,11 +14,11 @@ public class Bill {
 	private double total;
 	private Patient patient;
 	private User user;
-	private long id;
+	private int id;
 	
 	
 	
-	public Bill(Patient patient, User user, long id) {
+	public Bill(Patient patient, User user, int id) {
 		items = new LinkedList();
 		this.patient = patient;
 		this.user = user;
@@ -44,10 +44,10 @@ public class Bill {
 	public void setUser(User user) {
 		this.user = user;
 	}
-	public long getId() {
+	public int getId() {
 		return id;
 	}
-	public void setId(long id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 	public LinkedList getItems() {
@@ -79,9 +79,7 @@ public class Bill {
 	
 	@Override
 	public String toString() {
-		return "Bill [items=" + items + ", total=" + total + ", patient="
-				+ patient + ", user=" + user + ", id=" + id + "]";
+		return String.valueOf(id);
 	}
-	
 	
 }

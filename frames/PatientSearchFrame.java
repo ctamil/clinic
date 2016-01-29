@@ -1,26 +1,24 @@
 package frames;
 
 import java.awt.BorderLayout;
-import java.awt.EventQueue;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.regex.Pattern;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JTextField;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JButton;
+import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
 
 import storage.PatientInfo;
 import ds.Traveller;
 import dto.Patient;
-
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import java.util.regex.Pattern;
 
 public class PatientSearchFrame extends JFrame {
 
@@ -33,26 +31,10 @@ public class PatientSearchFrame extends JFrame {
 	private JTable table;
 
 	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					PatientSearchFrame frame = new PatientSearchFrame();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
-	/**
 	 * Create the frame.
 	 */
 	public PatientSearchFrame() {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 552, 641);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -113,6 +95,16 @@ public class PatientSearchFrame extends JFrame {
 		});
 		btnDeletePatient.setBounds(211, 559, 130, 23);
 		panel.add(btnDeletePatient);
+		
+		JButton btnBack = new JButton("Back");
+		btnBack.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				new NavigationFrame().setVisible(true);
+				dispose();
+			}
+		});
+		btnBack.setBounds(411, 559, 105, 23);
+		panel.add(btnBack);
 	}
 
 	private void searchAndUpdate() {
