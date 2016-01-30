@@ -1,8 +1,7 @@
-package frames;
+package panels;
 
 import java.awt.BorderLayout;
 
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
@@ -24,11 +23,10 @@ import java.awt.event.ActionEvent;
 import java.util.Calendar;
 import java.util.regex.Pattern;
 
-public class RegisterationFrame extends JFrame {
+public class RegisterationPanel extends JPanel {
 
 
 	private static final long serialVersionUID = 4520649564739812454L;
-	private JPanel contentPane;
 	private JPanel panel;
 	private JTextField txtName;
 	private JTextField txtDaymonthyear;
@@ -42,22 +40,18 @@ public class RegisterationFrame extends JFrame {
 	private JRadioButton rdbtnMale;
 	private JRadioButton rdbtnFemale;
 	private JTextField txtPinCode;
-	private JButton btnBack;
 	private JButton btnReset;
 
 	/**
 	 * Create the frame.
 	 */
-	public RegisterationFrame() {
-		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+	public RegisterationPanel() {
 		setBounds(100, 100, 552, 641);
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		contentPane.setLayout(new BorderLayout(0, 0));
-		setContentPane(contentPane);
+		setBorder(new EmptyBorder(5, 5, 5, 5));
+		setLayout(new BorderLayout(0, 0));
 		
 		panel = new JPanel();
-		contentPane.add(panel, BorderLayout.CENTER);
+		add(panel, BorderLayout.CENTER);
 		panel.setLayout(null);
 		
 		JLabel lblPatientRegisterationForm = new JLabel("Patient Registration Form");
@@ -180,16 +174,6 @@ public class RegisterationFrame extends JFrame {
 		txtPinCode.setBounds(219, 256, 237, 20);
 		panel.add(txtPinCode);
 		
-		btnBack = new JButton("Back");
-		btnBack.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				new NavigationFrame().setVisible(true);
-				dispose();
-			}
-		});
-		btnBack.setBounds(342, 553, 114, 23);
-		panel.add(btnBack);
-		
 		btnReset = new JButton("Reset");
 		btnReset.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -199,12 +183,18 @@ public class RegisterationFrame extends JFrame {
 		btnReset.setBounds(181, 553, 138, 23);
 		panel.add(btnReset);
 		
-		
 	}
 	
 	private void reset(){
-		dispose();
-		new RegisterationFrame().setVisible(true);
+		txtName.setText("");
+		txtContact.setText("");
+		txtCity.setText("");
+		txtState.setText("");
+		txtCountry.setText("");
+		txtPinCode.setText("");
+		txtDaymonthyear.setText("");
+		textAddress.setText("");
+		textInfo.setText("");
 	}
 	
 	private boolean register() {

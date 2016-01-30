@@ -1,8 +1,7 @@
-package frames;
+package panels;
 
 import java.awt.BorderLayout;
 
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
@@ -29,11 +28,12 @@ import dto.Patient;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.awt.Font;
+import java.awt.Color;
 
-public class BillingFrame extends JFrame {
+public class BillingPanel extends JPanel {
 
 	private static final long serialVersionUID = 2464166899373394596L;
-	private JPanel contentPane;
 	private JTextField textField;
 	private JTextField textField_1;
 	private StockTableProcessing stockTable;
@@ -45,47 +45,44 @@ public class BillingFrame extends JFrame {
 	/**
 	 * Creates the frame.
 	 */
-	public BillingFrame() {
+	public BillingPanel() {
 		stockTable = new StockTableProcessing();
-		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 734, 543);
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		contentPane.setLayout(new BorderLayout(0, 0));
-		setContentPane(contentPane);
+		setBounds(100, 100, 784, 552);
+		setBorder(new EmptyBorder(5, 5, 5, 5));
+		setLayout(new BorderLayout(0, 0));
 		
 		JPanel panel = new JPanel();
-		contentPane.add(panel, BorderLayout.CENTER);
+		add(panel, BorderLayout.CENTER);
 		panel.setLayout(null);
 		
-		JLabel lblPatientNumber = new JLabel("Patient Phone Number: ");
-		lblPatientNumber.setBounds(10, 11, 173, 14);
+		JLabel lblPatientNumber = new JLabel("Phone Number: ");
+		lblPatientNumber.setBounds(10, 14, 90, 14);
 		panel.add(lblPatientNumber);
 		
 		textField = new JTextField();
-		textField.setBounds(178, 8, 221, 20);
+		textField.setBounds(141, 11, 221, 20);
 		panel.add(textField);
 		textField.setColumns(10);
 		
 		JLabel lblItemName = new JLabel("Item Name: ");
-		lblItemName.setBounds(10, 60, 99, 14);
+		lblItemName.setBounds(10, 63, 90, 14);
 		panel.add(lblItemName);
 		
 		JLabel lblQuantity = new JLabel("Quantity: ");
-		lblQuantity.setBounds(368, 60, 74, 14);
+		lblQuantity.setBounds(10, 108, 74, 14);
 		panel.add(lblQuantity);
 		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 85, 688, 334);
+		scrollPane.setBounds(10, 145, 754, 334);
 		panel.add(scrollPane);
 		
 		table = new JTable();
 		scrollPane.setViewportView(table);
-		table.setModel(new DefaultTableModel(new String[]{"Item Name", "Quantity", "Price", "Total"}, 0));
+		setTableModel();
 		table.setEnabled(false);
 		
 		textField_1 = new JTextField();
-		textField_1.setBounds(452, 57, 137, 20);
+		textField_1.setBounds(141, 105, 221, 20);
 		panel.add(textField_1);
 		textField_1.setColumns(10);
 		
@@ -95,37 +92,17 @@ public class BillingFrame extends JFrame {
 				addToTable();
 			}
 		});
-		btnAdd.setBounds(599, 56, 99, 23);
+		btnAdd.setBounds(410, 104, 99, 23);
 		panel.add(btnAdd);
 		
 		comboBox = new JComboBox<>();
-		comboBox.setBounds(100, 57, 221, 20);
+		comboBox.setBounds(141, 60, 221, 20);
 		panel.add(comboBox);
-		addItems(comboBox);
+		addItems();
 		
-		JLabel lblTotalAmount = new JLabel("Total Amount ");
-		lblTotalAmount.setBounds(10, 434, 74, 14);
+		JLabel lblTotalAmount = new JLabel("Total Amount:");
+		lblTotalAmount.setBounds(435, 505, 152, 14);
 		panel.add(lblTotalAmount);
-		
-		JButton btnRoundUp = new JButton("Round Up");
-		btnRoundUp.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				Float val = Float.parseFloat(label.getText());
-				label.setText(String.valueOf(Math.ceil(val)));
-			}
-		});
-		btnRoundUp.setBounds(178, 430, 105, 23);
-		panel.add(btnRoundUp);
-		
-		JButton btnRoundDown = new JButton("Round Down");
-		btnRoundDown.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				Float val = Float.parseFloat(label.getText());
-				label.setText(String.valueOf(Math.floor(val)));
-			}
-		});
-		btnRoundDown.setBounds(312, 430, 105, 23);
-		panel.add(btnRoundDown);
 		
 		JButton btnGenerateBill = new JButton("Save");
 		btnGenerateBill.addActionListener(new ActionListener() {
@@ -137,7 +114,7 @@ public class BillingFrame extends JFrame {
 				}
 			}
 		});
-		btnGenerateBill.setBounds(446, 430, 105, 23);
+		btnGenerateBill.setBounds(10, 501, 105, 23);
 		panel.add(btnGenerateBill);
 		
 		JButton btnGeneratePrint = new JButton("Save & Print");
@@ -151,27 +128,43 @@ public class BillingFrame extends JFrame {
 				}
 			}
 		});
-		btnGeneratePrint.setBounds(572, 430, 126, 23);
+		btnGeneratePrint.setBounds(125, 501, 126, 23);
 		panel.add(btnGeneratePrint);
 		
 		label = new JLabel("0.0");
-		label.setBounds(89, 434, 46, 14);
+		label.setForeground(Color.BLUE);
+		label.setFont(new Font("Times New Roman", Font.BOLD, 18));
+		label.setBounds(597, 498, 143, 29);
 		panel.add(label);
 		
-		JButton btnBack = new JButton("Back");
-		btnBack.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				new NavigationFrame().setVisible(true);
-				dispose();
+		JButton btnRefresh = new JButton("Refresh");
+		btnRefresh.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				addItems();
 			}
 		});
-		btnBack.setBounds(572, 463, 126, 23);
-		panel.add(btnBack);
+		btnRefresh.setBounds(410, 59, 99, 23);
+		panel.add(btnRefresh);
+		
+		JButton btnNewButton = new JButton("Reset");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				reset();
+			}
+		});
+		btnNewButton.setBounds(261, 501, 89, 23);
+		panel.add(btnNewButton);
+	}
+
+	private void setTableModel() {
+		table.setModel(new DefaultTableModel(new String[]{"Item Name", "Quantity", "Price", "Total"}, 0));
 	}
 
 	protected void reset() {
-		new BillingFrame().setVisible(true);
-		dispose();
+		setTableModel();
+		textField.setText("");
+		textField_1.setText("");
+		label.setText("0.0");
 	}
 
 	/**
@@ -216,7 +209,8 @@ public class BillingFrame extends JFrame {
 	 * adds all the items from stock table to combobox.
 	 * @param comboBox
 	 */
-	private void addItems(JComboBox<String> comboBox) {
+	private void addItems() {
+		comboBox.removeAllItems();
 		Traveller traveller = stockTable.itemList().traveller();
 		while(traveller.hasNext()) 
 			comboBox.addItem(traveller.next().toString());
@@ -287,6 +281,4 @@ public class BillingFrame extends JFrame {
 			return false;
 		}
 	}
-
-	
 }

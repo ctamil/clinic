@@ -1,8 +1,7 @@
-package frames;
+package panels;
 
 import java.awt.BorderLayout;
 
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.AbstractAction;
@@ -23,13 +22,12 @@ import dto.Item;
 
 import java.awt.Font;
 
-public class AddStockFrame extends JFrame implements ActionListener {
+public class AddStockPanel extends JPanel implements ActionListener {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 7001738797735489013L;
-	private JPanel contentPane;
 	private JTextField textField;
 	private JTextField textField_1;
 	private JTextField textField_2;
@@ -38,16 +36,13 @@ public class AddStockFrame extends JFrame implements ActionListener {
 	/**
 	 * Create the frame.
 	 */
-	public AddStockFrame() {
-		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+	public AddStockPanel() {
 		setBounds(100, 100, 375, 330);
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		contentPane.setLayout(new BorderLayout(0, 0));
-		setContentPane(contentPane);
+		setBorder(new EmptyBorder(5, 5, 5, 5));
+		setLayout(new BorderLayout(0, 0));
 		
 		JPanel panel = new JPanel();
-		contentPane.add(panel, BorderLayout.CENTER);
+		add(panel, BorderLayout.CENTER);
 		panel.setLayout(null);
 		
 		JLabel lblItemName = new JLabel("Item Name: ");
@@ -120,11 +115,6 @@ public class AddStockFrame extends JFrame implements ActionListener {
 		lblAddItemsTo.setFont(new Font("Tahoma", Font.BOLD, 14));
 		lblAddItemsTo.setBounds(84, 21, 202, 14);
 		panel.add(lblAddItemsTo);
-		
-		JButton btnBack = new JButton("Back");
-		btnBack.addActionListener(this);
-		btnBack.setBounds(223, 224, 104, 23);
-		panel.add(btnBack);
 	}
 	
 	public void reset(){
@@ -134,18 +124,16 @@ public class AddStockFrame extends JFrame implements ActionListener {
 		textField_3.setText(String.valueOf(0.0));
 	}
 	
-	public void back(){
-		new NavigationFrame().setVisible(true);
-		dispose();
-	}
-	
 	private void add() {
 		if(isValidUserData()){
 			try{
 				String name = textField.getText().trim().toLowerCase();
 				float price = Float.parseFloat(textField_1.getText().trim());
 				int qty = Integer.parseInt(textField_2.getText().trim());
-				if(new StockTableProcessing().addToTable(new Item(name, price, qty))) reset(); //completed adding to database;
+				if(new StockTableProcessing().addToTable(new Item(name, price, qty))) {
+					JOptionPane.showMessageDialog(this, "Stock Added.");
+					reset(); //completed adding to database;
+				}
 				else JOptionPane.showMessageDialog(this, "Invalid Information, Not Added to database");
 			}catch(NumberFormatException | NullPointerException exp){
 				exp.printStackTrace();
@@ -189,10 +177,6 @@ public class AddStockFrame extends JFrame implements ActionListener {
 				
 				case "Reset":
 					reset();
-					break;
-					
-				case "Back":
-					back();
 					break;
 			}
 		}

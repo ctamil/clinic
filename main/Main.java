@@ -1,11 +1,11 @@
 package main;
 
-import frames.NavigationFrame;
+import frames.MainPage;
 
 public class Main {
 
 	public static void main(String[] args) {
-		new NavigationFrame().setVisible(true);
+		new MainPage().setVisible(true);
 	}
 
 }

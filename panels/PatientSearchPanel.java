@@ -1,4 +1,4 @@
-package frames;
+package panels;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
@@ -6,7 +6,6 @@ import java.awt.event.ActionListener;
 import java.util.regex.Pattern;
 
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -19,30 +18,27 @@ import javax.swing.table.DefaultTableModel;
 import storage.PatientInfo;
 import ds.Traveller;
 import dto.Patient;
+import frames.PatientViewFrame;
 
-public class PatientSearchFrame extends JFrame {
+public class PatientSearchPanel extends JPanel {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -2193316112347185479L;
-	private JPanel contentPane;
 	private JTextField textField;
 	private JTable table;
 
 	/**
 	 * Create the frame.
 	 */
-	public PatientSearchFrame() {
-		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+	public PatientSearchPanel() {
 		setBounds(100, 100, 552, 641);
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		contentPane.setLayout(new BorderLayout(0, 0));
-		setContentPane(contentPane);
+		setBorder(new EmptyBorder(5, 5, 5, 5));
+		setLayout(new BorderLayout(0, 0));
 		
 		JPanel panel = new JPanel();
-		contentPane.add(panel, BorderLayout.CENTER);
+		add(panel, BorderLayout.CENTER);
 		panel.setLayout(null);
 		
 		JLabel lblPatientPhoneNumber = new JLabel("Patient Phone Number");
@@ -84,27 +80,19 @@ public class PatientSearchFrame extends JFrame {
 		btnDeletePatient.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if(isValidUserData()){
+					int option = JOptionPane.showConfirmDialog(null, "Are You Sure Want to Delete.");
+					if(option == JOptionPane.NO_OPTION) return;
 					String number = table.getModel().getValueAt(table.getSelectedRow(), 0).toString();
 					Patient patient = PatientInfo.getInstance().get(number);
 					PatientInfo.getInstance().delete(patient);
 					searchAndUpdate();
 				}else{
-					JOptionPane.showMessageDialog(contentPane, "Invalid Input");
+					JOptionPane.showMessageDialog(null, "Invalid Input");
 				}
 			}
 		});
 		btnDeletePatient.setBounds(211, 559, 130, 23);
 		panel.add(btnDeletePatient);
-		
-		JButton btnBack = new JButton("Back");
-		btnBack.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				new NavigationFrame().setVisible(true);
-				dispose();
-			}
-		});
-		btnBack.setBounds(411, 559, 105, 23);
-		panel.add(btnBack);
 	}
 
 	private void searchAndUpdate() {
@@ -112,7 +100,7 @@ public class PatientSearchFrame extends JFrame {
 			String number = textField.getText();
 			updateTable(number);
 		}else{
-			JOptionPane.showMessageDialog(contentPane, "Invalid Input");
+			JOptionPane.showMessageDialog(null, "Invalid Input");
 		}
 	}
 

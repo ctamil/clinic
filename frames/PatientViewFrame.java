@@ -72,7 +72,7 @@ public class PatientViewFrame extends JFrame {
 		scrollPane.setBounds(10, 347, 506, 84);
 		panel.add(scrollPane);
 		
-		JLabel label_5 = new JLabel("Addition Info: ");
+		JLabel label_5 = new JLabel("Additional Info: ");
 		scrollPane.setColumnHeaderView(label_5);
 		
 		JLabel additionalInfo = new JLabel(patient.getNotes());
@@ -82,7 +82,7 @@ public class PatientViewFrame extends JFrame {
 		scrollPane_1.setBounds(10, 255, 506, 81);
 		panel.add(scrollPane_1);
 		
-		JLabel label_4 = new JLabel("");
+		JLabel label_4 = new JLabel(patient.getAddress());
 		scrollPane_1.setViewportView(label_4);
 		
 		JLabel lblAddress = new JLabel("Address:");

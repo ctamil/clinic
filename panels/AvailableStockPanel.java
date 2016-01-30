@@ -1,8 +1,7 @@
-package frames;
+package panels;
 
 import java.awt.BorderLayout;
 
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -20,29 +19,21 @@ import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-public class AvailableStockFrame extends JFrame {
+public class AvailableStockPanel extends JPanel {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -5032347759657468271L;
-	private JPanel contentPane;
 	private JTable table;
 
-
-	/**
-	 * Create the frame.
-	 */
-	public AvailableStockFrame() {
-		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+	public AvailableStockPanel() {
 		setBounds(100, 100, 552, 634);
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		contentPane.setLayout(new BorderLayout(0, 0));
-		setContentPane(contentPane);
+		setBorder(new EmptyBorder(5, 5, 5, 5));
+		setLayout(new BorderLayout(0, 0));
 		
 		JPanel panel = new JPanel();
-		contentPane.add(panel, BorderLayout.CENTER);
+		add(panel, BorderLayout.CENTER);
 		panel.setLayout(null);
 		
 		JScrollPane scrollPane = new JScrollPane();
@@ -66,16 +57,6 @@ public class AvailableStockFrame extends JFrame {
 		btnRefresh.setBounds(0, 11, 137, 23);
 		panel_1.add(btnRefresh);
 		
-		JButton btnBack = new JButton("Back");
-		btnBack.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				new NavigationFrame().setVisible(true);
-				dispose();
-			}
-		});
-		btnBack.setBounds(414, 11, 112, 23);
-		panel_1.add(btnBack);
-		
 		JButton btnDelete = new JButton("Delete Item");
 		btnDelete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -89,6 +70,8 @@ public class AvailableStockFrame extends JFrame {
 	}
 
 	private void deleteItem() {
+		int option = JOptionPane.showConfirmDialog(null, "Are You Sure Want to Delete.");
+		if(option == JOptionPane.NO_OPTION) return;
 		int row = table.getSelectedRow();
 		if(row == -1) {
 			JOptionPane.showMessageDialog(this, "Select An Item");

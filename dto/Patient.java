@@ -96,7 +96,8 @@ public class Patient {
 		return true;
 	}
 	public String getName() {
-		return name;
+		
+		return name.toUpperCase();
 	}
 	public void setName(String name) {
 		name = name.toLowerCase();
