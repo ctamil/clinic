@@ -1,11 +1,11 @@
 package main;
 
-import frames.MainPage;
+import frames.LoginPage;
 
 public class Main {
 
 	public static void main(String[] args) {
-		new MainPage().setVisible(true);
+		new LoginPage().setVisible(true);
 	}
 
 }

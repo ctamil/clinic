@@ -2,6 +2,7 @@ package frames;
 
 import java.awt.BorderLayout;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -10,6 +11,7 @@ import javax.swing.JLabel;
 import dto.Patient;
 
 import java.awt.Font;
+
 import javax.swing.JScrollPane;
 
 public class PatientViewFrame extends JFrame {
@@ -24,6 +26,7 @@ public class PatientViewFrame extends JFrame {
 	 * Create the frame.
 	 */
 	public PatientViewFrame(Patient patient) {
+		setIconImage(new ImageIcon(System.getProperty("user.dir")+"\\logo.png").getImage());
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 552, 494);
 		contentPane = new JPanel();

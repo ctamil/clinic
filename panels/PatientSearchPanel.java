@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.regex.Pattern;
 
+import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -12,6 +13,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
@@ -22,9 +24,6 @@ import frames.PatientViewFrame;
 
 public class PatientSearchPanel extends JPanel {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -2193316112347185479L;
 	private JTextField textField;
 	private JTable table;
@@ -49,6 +48,14 @@ public class PatientSearchPanel extends JPanel {
 		textField.setBounds(166, 8, 210, 20);
 		panel.add(textField);
 		textField.setColumns(10);
+		textField.getInputMap().put(KeyStroke.getKeyStroke("ENTER"), "Enter");
+		textField.getActionMap().put("Enter", new AbstractAction() {
+			private static final long serialVersionUID = -5250939285538217812L;
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				searchAndUpdate();
+			}
+		});
 		
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(10, 47, 506, 495);
@@ -69,8 +76,7 @@ public class PatientSearchPanel extends JPanel {
 		JButton btnViewPatientDetails = new JButton("View Patient Details");
 		btnViewPatientDetails.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				String number = table.getModel().getValueAt(table.getSelectedRow(), 0).toString();
-				new PatientViewFrame(PatientInfo.getInstance().get(number)).setVisible(true);
+				viewPatientDetails();
 			}
 		});
 		btnViewPatientDetails.setBounds(10, 559, 191, 23);
@@ -79,20 +85,29 @@ public class PatientSearchPanel extends JPanel {
 		JButton btnDeletePatient = new JButton("Delete Patient");
 		btnDeletePatient.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				if(isValidUserData()){
-					int option = JOptionPane.showConfirmDialog(null, "Are You Sure Want to Delete.");
-					if(option == JOptionPane.NO_OPTION) return;
-					String number = table.getModel().getValueAt(table.getSelectedRow(), 0).toString();
-					Patient patient = PatientInfo.getInstance().get(number);
-					PatientInfo.getInstance().delete(patient);
-					searchAndUpdate();
-				}else{
-					JOptionPane.showMessageDialog(null, "Invalid Input");
-				}
+				delete();
 			}
 		});
 		btnDeletePatient.setBounds(211, 559, 130, 23);
 		panel.add(btnDeletePatient);
+	}
+
+	private void viewPatientDetails() {
+		String number = table.getModel().getValueAt(table.getSelectedRow(), 0).toString();
+		new PatientViewFrame(PatientInfo.getInstance().get(number)).setVisible(true);
+	}
+
+	private void delete() {
+		if(table.getSelectedRow() != -1){
+			int option = JOptionPane.showConfirmDialog(null, "Are You Sure Want to Delete.");
+			if(option == JOptionPane.NO_OPTION) return;
+			String number = table.getModel().getValueAt(table.getSelectedRow(), 0).toString();
+			Patient patient = PatientInfo.getInstance().get(number);
+			PatientInfo.getInstance().delete(patient);
+			searchAndUpdate();
+		}else{
+			JOptionPane.showMessageDialog(this, "Select a row from table to delete");
+		}
 	}
 
 	private void searchAndUpdate() {

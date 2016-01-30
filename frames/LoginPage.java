@@ -1,7 +1,6 @@
 package frames;
 
 import java.awt.BorderLayout;
-import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -26,25 +25,10 @@ public class LoginPage extends JFrame {
 	private JPasswordField passwordField;
 
 	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					LoginPage frame = new LoginPage();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
-	/**
 	 * Create the frame.
 	 */
 	public LoginPage() {
+		setIconImage(new ImageIcon(System.getProperty("user.dir")+"\\logo.png").getImage());
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 609, 379);
 		contentPane = new JPanel();
@@ -57,7 +41,7 @@ public class LoginPage extends JFrame {
 		panel.setLayout(null);
 		
 		JLabel label = new JLabel("");
-		label.setIcon(new ImageIcon("C:\\Users\\Tamil\\Desktop\\Cover\\front1.png"));
+		label.setIcon(new ImageIcon(System.getProperty("user.dir")+"\\logo.png"));
 		label.setBounds(119, 11, 280, 126);
 		panel.add(label);
 		
