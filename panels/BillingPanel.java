@@ -19,35 +19,43 @@ import billing.DocumentPrinter;
 import storage.PatientInfo;
 import storage.UserInfo;
 import database.BillTableProcessing;
+import database.CategoryTableProcessing;
 import database.StockTableProcessing;
 import ds.Traveller;
 import dto.Bill;
+import dto.CustomDate;
 import dto.Item;
 import dto.Patient;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.util.Calendar;
 import java.awt.Font;
 import java.awt.Color;
 
 public class BillingPanel extends JPanel {
 
 	private static final long serialVersionUID = 2464166899373394596L;
-	private JTextField textField;
-	private JTextField textField_1;
+	private JTextField txtKey;
+	private JTextField txtQty;
 	private StockTableProcessing stockTable;
 	private JTable table;
-	private JComboBox<String> comboBox;
+	private JComboBox<String> itemComboBox;
+	private JComboBox<String> categoryComboBox;
 	private JLabel label;
-
+	private CategoryTableProcessing categoryTable;
+	private String[] COLUMNS = {"Item Name", "Quantity", "Price", "Category", "Expire Date", "Total"};
+	private JTextField txtFee;
+	private JComboBox<String> expiresComboBox;
 
 	/**
 	 * Creates the frame.
 	 */
 	public BillingPanel() {
+		categoryTable = new CategoryTableProcessing();
 		stockTable = new StockTableProcessing();
-		setBounds(100, 100, 784, 552);
+		setBounds(100, 100, 784, 663);
 		setBorder(new EmptyBorder(5, 5, 5, 5));
 		setLayout(new BorderLayout(0, 0));
 		
@@ -55,25 +63,21 @@ public class BillingPanel extends JPanel {
 		add(panel, BorderLayout.CENTER);
 		panel.setLayout(null);
 		
-		JLabel lblPatientNumber = new JLabel("Phone Number: ");
-		lblPatientNumber.setBounds(10, 14, 90, 14);
-		panel.add(lblPatientNumber);
-		
-		textField = new JTextField();
-		textField.setBounds(141, 11, 221, 20);
-		panel.add(textField);
-		textField.setColumns(10);
+		txtKey = new JTextField();
+		txtKey.setBounds(194, 21, 221, 20);
+		panel.add(txtKey);
+		txtKey.setColumns(10);
 		
 		JLabel lblItemName = new JLabel("Item Name: ");
-		lblItemName.setBounds(10, 63, 90, 14);
+		lblItemName.setBounds(10, 132, 90, 14);
 		panel.add(lblItemName);
 		
 		JLabel lblQuantity = new JLabel("Quantity: ");
-		lblQuantity.setBounds(10, 108, 74, 14);
+		lblQuantity.setBounds(10, 219, 74, 14);
 		panel.add(lblQuantity);
 		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 145, 754, 334);
+		scrollPane.setBounds(10, 249, 754, 334);
 		panel.add(scrollPane);
 		
 		table = new JTable();
@@ -81,10 +85,10 @@ public class BillingPanel extends JPanel {
 		setTableModel();
 		table.setEnabled(false);
 		
-		textField_1 = new JTextField();
-		textField_1.setBounds(141, 105, 221, 20);
-		panel.add(textField_1);
-		textField_1.setColumns(10);
+		txtQty = new JTextField("1");
+		txtQty.setBounds(194, 216, 221, 20);
+		panel.add(txtQty);
+		txtQty.setColumns(10);
 		
 		JButton btnAdd = new JButton("Add");
 		btnAdd.addActionListener(new ActionListener() {
@@ -92,16 +96,31 @@ public class BillingPanel extends JPanel {
 				addToTable();
 			}
 		});
-		btnAdd.setBounds(410, 104, 99, 23);
+		btnAdd.setBounds(463, 215, 99, 23);
 		panel.add(btnAdd);
 		
-		comboBox = new JComboBox<>();
-		comboBox.setBounds(141, 60, 221, 20);
-		panel.add(comboBox);
-		addItems();
+		categoryComboBox = new JComboBox<String>();
+		categoryComboBox.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				updateItems();
+			}
+		});
+		categoryComboBox.setBounds(194, 90, 221, 20);
+		panel.add(categoryComboBox);
+		categoryTable.updateCategory(categoryComboBox);
+		
+		itemComboBox = new JComboBox<>();
+		itemComboBox.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				updateExpireDate();
+			}
+		});
+		itemComboBox.setBounds(194, 129, 221, 20);
+		panel.add(itemComboBox);
+		updateItems();
 		
 		JLabel lblTotalAmount = new JLabel("Total Amount:");
-		lblTotalAmount.setBounds(435, 505, 152, 14);
+		lblTotalAmount.setBounds(435, 609, 152, 14);
 		panel.add(lblTotalAmount);
 		
 		JButton btnGenerateBill = new JButton("Save");
@@ -111,10 +130,10 @@ public class BillingPanel extends JPanel {
 				if(file != null) {
 					System.out.println(file);
 					reset();
-				}
+				}else System.out.println("no bill");
 			}
 		});
-		btnGenerateBill.setBounds(10, 501, 105, 23);
+		btnGenerateBill.setBounds(10, 605, 105, 23);
 		panel.add(btnGenerateBill);
 		
 		JButton btnGeneratePrint = new JButton("Save & Print");
@@ -128,22 +147,23 @@ public class BillingPanel extends JPanel {
 				}
 			}
 		});
-		btnGeneratePrint.setBounds(125, 501, 126, 23);
+		btnGeneratePrint.setBounds(125, 605, 126, 23);
 		panel.add(btnGeneratePrint);
 		
 		label = new JLabel("0.0");
 		label.setForeground(Color.BLUE);
 		label.setFont(new Font("Times New Roman", Font.BOLD, 18));
-		label.setBounds(597, 498, 143, 29);
+		label.setBounds(597, 602, 143, 29);
 		panel.add(label);
 		
 		JButton btnRefresh = new JButton("Refresh");
 		btnRefresh.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				addItems();
+				categoryTable.updateCategory(categoryComboBox);
+				updateItems();
 			}
 		});
-		btnRefresh.setBounds(410, 59, 99, 23);
+		btnRefresh.setBounds(463, 171, 99, 23);
 		panel.add(btnRefresh);
 		
 		JButton btnNewButton = new JButton("Reset");
@@ -152,18 +172,53 @@ public class BillingPanel extends JPanel {
 				reset();
 			}
 		});
-		btnNewButton.setBounds(261, 501, 89, 23);
+		btnNewButton.setBounds(261, 605, 89, 23);
 		panel.add(btnNewButton);
+		
+		JLabel lblCategory = new JLabel("Category");
+		lblCategory.setBounds(10, 93, 90, 14);
+		panel.add(lblCategory);
+		
+		JLabel lblNumberOrId = new JLabel("Number or ID: ");
+		lblNumberOrId.setBounds(10, 24, 90, 14);
+		panel.add(lblNumberOrId);
+		
+		JLabel lblExpiresOn = new JLabel("Expires On:");
+		lblExpiresOn.setBounds(10, 175, 90, 14);
+		panel.add(lblExpiresOn);
+		
+		expiresComboBox = new JComboBox<String>();
+		expiresComboBox.setBounds(194, 172, 221, 20);
+		panel.add(expiresComboBox);
+		
+		JLabel lblDoctersFee = new JLabel("Docter's Fee: ");
+		lblDoctersFee.setBounds(10, 60, 152, 14);
+		panel.add(lblDoctersFee);
+		
+		txtFee = new JTextField();
+		txtFee.setColumns(10);
+		txtFee.setBounds(194, 57, 221, 20);
+		panel.add(txtFee);
+	}
+
+	private void updateExpireDate() {
+		if(expiresComboBox == null || itemComboBox == null || itemComboBox.getItemCount() <=0) return;
+		if(expiresComboBox.getItemCount() > 0) expiresComboBox.removeAllItems(); //removing all previous items.
+		String itemName = itemComboBox.getSelectedItem().toString();
+		Traveller traveller = stockTable.getexpireDatesList(itemName).traveller();
+		while(traveller.hasNext()) 
+			expiresComboBox.addItem(new CustomDate((java.sql.Date)traveller.next()).toString());
 	}
 
 	private void setTableModel() {
-		table.setModel(new DefaultTableModel(new String[]{"Item Name", "Quantity", "Price", "Total"}, 0));
+		table.setModel(new DefaultTableModel(COLUMNS, 0));
 	}
 
 	protected void reset() {
 		setTableModel();
-		textField.setText("");
-		textField_1.setText("");
+		txtFee.setText("");
+		txtKey.setText("");
+		txtQty.setText("1");
 		label.setText("0.0");
 	}
 
@@ -177,8 +232,8 @@ public class BillingPanel extends JPanel {
 	private File saveBill() {
 		Patient patient = null;
 
-		if(textField.getText() != null && textField.getText().length() >= 1) 
-			patient = PatientInfo.getInstance().get(textField.getText());
+		if(txtKey.getText() != null && txtKey.getText().length() >= 1)
+			patient = PatientInfo.getInstance().getPatient(txtKey.getText());
 
 		if(patient == null){
 			JOptionPane.showMessageDialog(this, "Patient Number not found");
@@ -190,12 +245,17 @@ public class BillingPanel extends JPanel {
 			return null;
 		}
 
-		Bill bill = new Bill(patient, UserInfo.getUSER(), new BillTableProcessing().getId());
+		Float docterFee = Float.parseFloat(txtFee.getText());
+		Bill bill = new Bill(patient, UserInfo.getUSER(), new BillTableProcessing().nextId(), docterFee);
 		for(int i=0; i<table.getRowCount(); i++){
+
 			String itemName = table.getValueAt(i, 0).toString();
 			int qty = Integer.parseInt(table.getValueAt(i, 1).toString());
 			float price = Float.parseFloat(table.getValueAt(i, 2).toString());
-			Item item = new Item(itemName, price, qty);
+			String category = table.getValueAt(i, 3).toString();
+			Calendar date = new CustomDate(table.getValueAt(i, 4).toString()).getCalender();
+			
+			Item item = new Item(itemName, price, qty, category, date);
 			bill.addItem(item);
 		}
 		if(stockTable.updateBill(bill)) {
@@ -206,58 +266,58 @@ public class BillingPanel extends JPanel {
 	}
 
 	/**
-	 * adds all the items from stock table to combobox.
+	 * adds all the items from stock table to combo box.
 	 * @param comboBox
 	 */
-	private void addItems() {
-		comboBox.removeAllItems();
-		Traveller traveller = stockTable.itemList().traveller();
+	private void updateItems() {
+		if(itemComboBox == null) return;
+		if(itemComboBox.getItemCount() > 0) itemComboBox.removeAllItems();
+		if(categoryComboBox == null || categoryComboBox.getSelectedItem() == null) return;
+		Traveller traveller = stockTable.itemList(categoryComboBox.getSelectedItem().toString()).traveller();
 		while(traveller.hasNext()) 
-			comboBox.addItem(traveller.next().toString());
+			itemComboBox.addItem(traveller.next().toString());
 	}
 	
-	/**
-	 * adds the item to billing table (not to DB table), selected from the combobox
-	 */
 	private void addToTable() {
 		if(!isValidToAddInTable()) return;
 		int lastRow = table.getRowCount();
-		TableModel model = new DefaultTableModel(new String[]{"Item Name", "Quantity", "Price", "Total"}, lastRow+1);
+		TableModel model = new DefaultTableModel(COLUMNS, lastRow+1);
 		for(int i=0; i<table.getRowCount(); i++){
 			model.setValueAt(table.getValueAt(i, 0), i, 0);
 			model.setValueAt(table.getValueAt(i, 1), i, 1);
 			model.setValueAt(table.getValueAt(i, 2), i, 2);
 			model.setValueAt(table.getValueAt(i, 3), i, 3);
+			model.setValueAt(table.getValueAt(i, 3), i, 4);
+			model.setValueAt(table.getValueAt(i, 3), i, 5);
 			
 		}
 		table.setModel(model);
 		
-		String item = comboBox.getSelectedItem().toString();
-		int qty = Integer.parseInt(textField_1.getText());
+		String item = itemComboBox.getSelectedItem().toString();
+		String category = categoryComboBox.getSelectedItem().toString();
+		int qty = Integer.parseInt(txtQty.getText());
 		float price = stockTable.getItemPrice(item);
+		String date = expiresComboBox.getSelectedItem().toString();
+		
 		table.setValueAt(item, lastRow, 0);
 		table.setValueAt(qty, lastRow, 1);
 		table.setValueAt(price, lastRow, 2);
-		table.setValueAt(qty * price, lastRow, 3);
+		table.setValueAt(category, lastRow, 3);
+		table.setValueAt(date, lastRow, 4);
+		table.setValueAt(qty * price, lastRow, 5);
 		updateTotal();
 	}
 
-	/**
-	 * Each time a item added to billing table (not DB table) total is updated.
-	 */
 	private void updateTotal() {
 		float total = 0.0f;
 		for(int i=0; i<table.getRowCount(); i++)
-			total += Float.parseFloat(table.getValueAt(i, 3).toString());
+			total += Float.parseFloat(table.getValueAt(i, 5).toString());
 		label.setText(String.valueOf(total));
 	}
-
-	/**
-	 * 
-	 * @return true if user input was valid
-	 */
+	
 	private boolean isValidToAddInTable() {
-		String item = comboBox.getSelectedItem().toString();
+		
+		String item = itemComboBox.getSelectedItem().toString();
 		for(int i=0; i<table.getRowCount(); i++){
 			if(item.equals(table.getValueAt(i, 0))) {
 				JOptionPane.showMessageDialog(this, "Item already in billing table");
@@ -265,20 +325,25 @@ public class BillingPanel extends JPanel {
 			}
 		}
 		
-		int availableQty = stockTable.getItemQty(item);
 		int billedQty = 0;
-		
 		try{
-			billedQty = Integer.parseInt(textField_1.getText());
+			billedQty = Integer.parseInt(txtQty.getText());
 		}catch(NullPointerException | NumberFormatException exp){
 			JOptionPane.showMessageDialog(this, "Invalid Input");
 			return false;
 		}
 		
+		if(billedQty <= 0) {
+			JOptionPane.showMessageDialog(this, "Quantity Should Be Greater than ZERO : ");
+			return false;
+		}
+		
+		int availableQty = stockTable.getItemQty(item);
 		if(billedQty <= availableQty) return true;
 		else {
 			JOptionPane.showMessageDialog(this, "Available Quantity : "+availableQty);
 			return false;
 		}
+		
 	}
 }

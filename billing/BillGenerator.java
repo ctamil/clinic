@@ -108,9 +108,9 @@ public class BillGenerator {
 		int year = currCal.get(Calendar.YEAR);
 		
 		addToCell(bill.getId() + "", firstRow.getCell(0), 10);
-		addToCell(date + "." + month + "." + year, firstRow.getCell(1), 10);
+		addToCell(bill.getPatient().getId(), firstRow.getCell(1), 10);
 		addToCell(bill.getPatient().getName(), secondRow.getCell(0), 10);
-		addToCell(bill.getPatient().getAge() + "" , secondRow.getCell(1), 10);
+		addToCell(date + "." + month + "." + year, secondRow.getCell(1), 10);
 	}
 	
 	private static void addToCell(String text, XWPFTableCell cell, int fontSize){

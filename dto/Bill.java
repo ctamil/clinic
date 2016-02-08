@@ -15,14 +15,21 @@ public class Bill {
 	private Patient patient;
 	private User user;
 	private int id;
+	private float docterFee;
 	
 	
-	
-	public Bill(Patient patient, User user, int id) {
+	public float getDocterFee() {
+		return docterFee;
+	}
+	public void setDocterFee(float docterFee) {
+		this.docterFee = docterFee;
+	}
+	public Bill(Patient patient, User user, int id, float docterFee) {
 		items = new LinkedList();
-		this.patient = patient;
-		this.user = user;
-		this.id = id;
+		setPatient(patient);
+		setUser(user);
+		setId(id);
+		setDocterFee(docterFee);
 	}
 	public void removeItem(Item item){
 		items.remove(item);

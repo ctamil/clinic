@@ -34,7 +34,7 @@ public class BillTableProcessing {
 	 * gets number of rows in bill table and returns puls one with that.
 	 * @return 1 + bill table size;
 	 */
-	public int getId(){
+	public int nextId(){
 		return getSize()+1;
 	}
 	
@@ -47,5 +47,5 @@ public class BillTableProcessing {
 			e.printStackTrace();
 		}
 	}
-	
+
 }

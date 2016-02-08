@@ -1,8 +1,12 @@
 package dto;
 
+import java.util.Calendar;
+
 public class Item implements Cloneable{
 	
 	private String name;
+	private String category;
+	private Calendar expireDate;
 	private float price;
 	private int quantity;
 	
@@ -17,17 +21,42 @@ public class Item implements Cloneable{
 		clone.setName(getName());
 		clone.setQuantity(getQuantity());
 		clone.setPrice(getPrice());
+		clone.setCategory(getCategory());
+		clone.setExpireDate(getExpireDate());
 		return clone;
 	}
 	
-	public Item(String name, float price, int quantity) {
+	public String getCategory() {
+		return category;
+	}
+
+	public void setCategory(String category) {
+		this.category = category;
+	}
+
+	public Calendar getExpireDate() {
+		return expireDate;
+	}
+
+	public void setExpireDate(Calendar expireDate) {
+		this.expireDate = expireDate;
+	}
+
+	public Item(String name, float price, int quantity, String category, Calendar expireDate) {
 		super();
 		setName(name);
 		setPrice(price);
 		setQuantity(quantity);
+		setCategory(category);
+		setExpireDate(expireDate);
+	}
+	public Item(String name, Calendar expireDate) {
+		setExpireDate(expireDate);
+		setName(name);
 	}
 	public Item() {
 	}
+
 	public float getTotal(){
 		return getPrice() * getQuantity();
 	}
@@ -48,33 +77,6 @@ public class Item implements Cloneable{
 	}
 	public void setQuantity(int quantity) {
 		this.quantity = quantity;
-	}
-	
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result + Float.floatToIntBits(price);
-		return result;
-	}
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Item other = (Item) obj;
-		if (name == null) {
-			if (other.name != null)
-				return false;
-		} else if (!name.equals(other.name))
-			return false;
-		if (Float.floatToIntBits(price) != Float.floatToIntBits(other.price))
-			return false;
-		return true;
 	}
 	
 	@Override

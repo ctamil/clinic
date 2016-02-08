@@ -2,13 +2,13 @@ package frames;
 
 import java.awt.BorderLayout;
 
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 
 import dto.Patient;
+import dto.PatientDetails;
 
 import java.awt.Font;
 
@@ -25,14 +25,13 @@ public class PatientViewFrame extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public PatientViewFrame(Patient patient) {
-		setIconImage(new ImageIcon(System.getProperty("user.dir")+"\\logo.png").getImage());
+	public PatientViewFrame(Patient patient, PatientDetails patientDetails) {
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 552, 494);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
-		setContentPane(contentPane);
+		add(contentPane, BorderLayout.CENTER);
 		
 		JPanel panel = new JPanel();
 		contentPane.add(panel, BorderLayout.CENTER);
@@ -43,32 +42,30 @@ public class PatientViewFrame extends JFrame {
 		lblName.setBounds(10, 11, 250, 28);
 		panel.add(lblName);
 		
-		JLabel lblContact = new JLabel("Contact: "+patient.getContactNo());
-		lblContact.setBounds(10, 50, 250, 14);
+		JLabel lblContact = new JLabel("Contact: "+patient.getPhoneNumber());
+		lblContact.setBounds(10, 100, 506, 14);
 		panel.add(lblContact);
 		
-		JLabel lblAge = new JLabel("Age: "+patient.getAge());
-		lblAge.setBounds(10, 80, 250, 14);
+		JLabel lblAge = new JLabel("Age: "+patientDetails.getAge());
+		lblAge.setBounds(10, 125, 506, 14);
 		panel.add(lblAge);
 		
-		JLabel lblGender = new JLabel("Gender: "+(patient.getIsMale() ? "Male" : "Female"));
-		lblGender.setBounds(10, 110, 250, 14);
+		String value = patientDetails.getIsMale() == null ? "NULL" : 
+			patientDetails.getIsMale() ? "Male" : "Female";
+		JLabel lblGender = new JLabel("Gender: "+value);
+		lblGender.setBounds(10, 155, 506, 14);
 		panel.add(lblGender);
 		
-		JLabel label = new JLabel("Country: "+patient.getCountry());
-		label.setBounds(10, 140, 250, 14);
-		panel.add(label);
-		
-		JLabel label_1 = new JLabel("State: "+patient.getState());
-		label_1.setBounds(10, 170, 250, 14);
+		JLabel label_1 = new JLabel("State: "+patientDetails.getState());
+		label_1.setBounds(10, 180, 506, 14);
 		panel.add(label_1);
 		
-		JLabel label_2 = new JLabel("District: "+patient.getCity());
-		label_2.setBounds(10, 200, 250, 14);
+		JLabel label_2 = new JLabel("District: "+patientDetails.getCity());
+		label_2.setBounds(10, 205, 506, 14);
 		panel.add(label_2);
 		
-		JLabel label_3 = new JLabel("Pin Code: "+patient.getPinCode());
-		label_3.setBounds(10, 230, 250, 14);
+		JLabel label_3 = new JLabel("Pin Code: "+patientDetails.getPinCode());
+		label_3.setBounds(10, 230, 506, 14);
 		panel.add(label_3);
 		
 		JScrollPane scrollPane = new JScrollPane();
@@ -78,17 +75,25 @@ public class PatientViewFrame extends JFrame {
 		JLabel label_5 = new JLabel("Additional Info: ");
 		scrollPane.setColumnHeaderView(label_5);
 		
-		JLabel additionalInfo = new JLabel(patient.getNotes());
+		JLabel additionalInfo = new JLabel(patientDetails.getNotes());
 		scrollPane.setViewportView(additionalInfo);
 		
 		JScrollPane scrollPane_1 = new JScrollPane();
 		scrollPane_1.setBounds(10, 255, 506, 81);
 		panel.add(scrollPane_1);
 		
-		JLabel label_4 = new JLabel(patient.getAddress());
+		JLabel label_4 = new JLabel(patientDetails.getAddress());
 		scrollPane_1.setViewportView(label_4);
 		
 		JLabel lblAddress = new JLabel("Address:");
 		scrollPane_1.setColumnHeaderView(lblAddress);
+		
+		JLabel lblFatherName = new JLabel("Father name: "+patientDetails.getFatherName());
+		lblFatherName.setBounds(10, 50, 506, 14);
+		panel.add(lblFatherName);
+		
+		JLabel lblMotherName = new JLabel("Mother name: "+patientDetails.getMotherName());
+		lblMotherName.setBounds(10, 75, 506, 14);
+		panel.add(lblMotherName);
 	}
 }

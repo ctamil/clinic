@@ -1,5 +1,6 @@
 package ds;
 
+
 public class TerenaryTrie implements Container, PrefixSearch{
 
 	private int size = 0;
@@ -39,7 +40,6 @@ public class TerenaryTrie implements Container, PrefixSearch{
 		prefixSearchAndAdd(list, head.middle);
 		return list;
 	}
-	
 
 	private void prefixSearchAndAdd(LinkedList list, Node node) {
 		if(node == null || node.data == null) return;
@@ -50,11 +50,15 @@ public class TerenaryTrie implements Container, PrefixSearch{
 		prefixSearchAndAdd(list, node.right);
 	}
 
-	
+	@Override
+	public void add(Object obj, String key) {
+		if(head.middle == null) head.middle = new Node();
+		add(key, 0, head.middle, obj);
+	}
+
 	@Override	
 	public void add(Object obj) {
-		if(head.middle == null) head.middle = new Node();
-		add(obj.toString(), 0, head.middle, obj);
+		add(obj, obj.toString());
 	}
 
 	private void add(String string, int index, Node node, Object obj) {
@@ -81,8 +85,13 @@ public class TerenaryTrie implements Container, PrefixSearch{
 	}
 
 	@Override
-	public void remove(Object o) {
-		if(contains(o)) remove(o.toString(), 0, head.middle);
+	public void remove(Object obj) {
+		remove(obj.toString());
+	}
+	
+	@Override
+	public void remove(String key) {
+		if(contains(key)) remove(key, 0, head.middle);
 	}
 
 	private void remove(String string, int index, Node node) {
@@ -170,9 +179,7 @@ public class TerenaryTrie implements Container, PrefixSearch{
 	}
 
 	
-	
-	
 
-	
+		
 
 }

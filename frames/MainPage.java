@@ -5,30 +5,24 @@ import java.awt.BorderLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
 import javax.swing.JTabbedPane;
+import javax.swing.border.EmptyBorder;
 
 import panels.AddStockPanel;
 import panels.AvailableStockPanel;
 import panels.BillingPanel;
 import panels.PatientSearchPanel;
-import panels.RegisterationPanel;
+import panels.register.RegisterationPanel;
 
 public class MainPage extends JFrame {
 
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 7484169762847527457L;
 	private JPanel contentPane;
 
-	/**
-	 * Create the frame.
-	 */
 	public MainPage() {
 		setIconImage(new ImageIcon(System.getProperty("user.dir")+"\\logo.png").getImage());
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setResizable(false);
 		setBounds(0, 0, 800, 700);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -46,6 +40,9 @@ public class MainPage extends JFrame {
 		tabbedPane.add("Billing", new BillingPanel());
 		tabbedPane.add("Availbale Stock", new AvailableStockPanel());
 		tabbedPane.add("Add Stock", new AddStockPanel());
-		
+	}
+
+	public static void main(String []args){
+		new MainPage().setVisible(true);
 	}
 }

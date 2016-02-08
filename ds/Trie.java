@@ -1,17 +1,17 @@
 package ds;
 
-public class NumberTrie implements Container, Traveller, PrefixSearch{
+public class Trie implements Container, PrefixSearch{
 	private Node head = null;
 	private int size;
-	private Traveller trieTraveller;
+	private static int R = 256;
 	
 	private class Node{
 		private boolean isPresent = false;
 		private Object data;
-		private Node next[] = new Node[10];
+		private Node next[] = new Node[R];
 	}
 	
-	public NumberTrie() {
+	public Trie() {
 		head = new Node();
 	}
 
@@ -28,11 +28,10 @@ public class NumberTrie implements Container, Traveller, PrefixSearch{
 
 	@Override
 	public Traveller traveller() {
-		trieTraveller = toLinkedList().traveller();
-		return this;
+		return toLinkedList().traveller();
 	}
 
-	private LinkedList toLinkedList() {
+	public LinkedList toLinkedList() {
 		LinkedList elements = new LinkedList();
 		traverseAndAdd(elements, head, new StringBuilder());
 		return elements;
@@ -41,19 +40,24 @@ public class NumberTrie implements Container, Traveller, PrefixSearch{
 	private void traverseAndAdd(LinkedList elements, Node next,
 			StringBuilder stringBuilder) {
 		if(next == null) return;
-		for(int i = 0; i<10; i++){
+		for(int i = 0; i<R; i++){
 			if(next.next[i] != null){
-				stringBuilder.append(i);
+				stringBuilder.append((char)i);
 				if(next.next[i].isPresent == true) elements.add(stringBuilder.toString());
 				traverseAndAdd(elements, next.next[i], stringBuilder);
 				stringBuilder.deleteCharAt(stringBuilder.length()-1);
 			}
 		}
 	}
-
+	
 	@Override
-	public void add(Object o) {
-		add(o.toString(), 0, head, o);
+	public void add(Object val, String key) {	
+		add(key, 0, head, val);
+	}
+	
+	@Override
+	public void add(Object obj) {
+		add(obj, obj.toString());
 	}
 
 	private void add(String string, int stringIndex, Node next, Object data) {
@@ -66,7 +70,6 @@ public class NumberTrie implements Container, Traveller, PrefixSearch{
 		}else{
 			add(string, stringIndex+1, next.next[nodeIndex], data);
 		}
-		
 	}
 	
 	/**
@@ -85,12 +88,17 @@ public class NumberTrie implements Container, Traveller, PrefixSearch{
 	 * @return
 	 */
 	private int getIndex(String string, int stringIndex) {
-		return string.charAt(stringIndex)-'0';
+		return string.charAt(stringIndex);
 	}
 
 	@Override
-	public void remove(Object o) {
-		if(contains(o)) remove(o.toString(), 0, head);
+	public void remove(String key) {
+		if(contains(key)) remove(key, 0, head);
+	}
+	
+	@Override
+	public void remove(Object obj) {
+		remove(obj.toString());
 	}
 
 	private void remove(String string, int stringIndex, Node next) {
@@ -140,16 +148,6 @@ public class NumberTrie implements Container, Traveller, PrefixSearch{
 	}
 
 	@Override
-	public boolean hasNext() {
-		return trieTraveller.hasNext();
-	}
-
-	@Override
-	public Object next() {
-		return trieTraveller.next();
-	}
-
-	@Override
 	public Traveller prefix(String number) {
 		LinkedList list = new LinkedList();
 		prefixSearch(list, findNode(0, number, head));
@@ -160,7 +158,7 @@ public class NumberTrie implements Container, Traveller, PrefixSearch{
 			Node next) {
 		if(next == null) return;
 		if(next.isPresent) list.add(next.data);
-		for(int nodeIndex = 0; nodeIndex < 10; nodeIndex++){
+		for(int nodeIndex = 0; nodeIndex < R; nodeIndex++){
 			prefixSearch(list, next.next[nodeIndex]);
 		}
 	}
@@ -173,4 +171,5 @@ public class NumberTrie implements Container, Traveller, PrefixSearch{
 			else return null;
 		}else return findNode(stringIndex+1, number, next.next[nodeIndex]);
 	}
+
 }
