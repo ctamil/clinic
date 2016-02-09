@@ -16,9 +16,6 @@ import javax.swing.JScrollPane;
 
 public class PatientViewFrame extends JFrame {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 577606507866650948L;
 	private JPanel contentPane;
 

@@ -246,7 +246,7 @@ public class BillingPanel extends JPanel {
 		}
 
 		Float docterFee = Float.parseFloat(txtFee.getText());
-		Bill bill = new Bill(patient, UserInfo.getUSER(), new BillTableProcessing().nextId(), docterFee);
+		Bill bill = new Bill(patient, UserInfo.getUser(), new BillTableProcessing().nextId(), docterFee);
 		for(int i=0; i<table.getRowCount(); i++){
 
 			String itemName = table.getValueAt(i, 0).toString();

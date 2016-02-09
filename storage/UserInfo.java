@@ -5,14 +5,17 @@ import dto.User;
 public class UserInfo {
 
 	private static User USER;
+	
+	private UserInfo(){
+		
+	}
 
-	public static User getUSER() {
-		if(USER == null) USER = new User("Default");
+	public static User getUser() {
 		return USER;
 	}
 
-	public static void setUSER(String name) {
-		UserInfo.USER = new User(name);
+	public static void setUSER(User user) {
+		UserInfo.USER = user;
 	}
 
 }

@@ -20,7 +20,9 @@ import storage.PatientInfo;
 import ds.Traveller;
 import dto.Patient;
 import dto.PatientDetails;
+import frames.PatientEditFrame;
 import frames.PatientViewFrame;
+import immunization.ImmunizationManager;
 
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
@@ -39,7 +41,7 @@ public class PatientSearchPanel extends JPanel {
 	 * Create the frame.
 	 */
 	public PatientSearchPanel() {
-		setBounds(100, 100, 669, 626);
+		setBounds(100, 100, 669, 600);
 		setBorder(new EmptyBorder(5, 5, 5, 5));
 		setLayout(new BorderLayout(0, 0));
 		
@@ -91,16 +93,16 @@ public class PatientSearchPanel extends JPanel {
 				viewPatientDetails();
 			}
 		});
-		btnViewPatientDetails.setBounds(10, 576, 191, 23);
+		btnViewPatientDetails.setBounds(10, 559, 191, 23);
 		panel.add(btnViewPatientDetails);
 		
-		JButton btnDeletePatient = new JButton("Delete Patient");
+		JButton btnDeletePatient = new JButton("Edit ");
 		btnDeletePatient.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				delete();
+				edit();
 			}
 		});
-		btnDeletePatient.setBounds(221, 576, 130, 23);
+		btnDeletePatient.setBounds(221, 559, 130, 23);
 		panel.add(btnDeletePatient);
 		
 		comboBox = new JComboBox<>();
@@ -109,7 +111,16 @@ public class PatientSearchPanel extends JPanel {
 		panel.add(comboBox);
 		
 		JButton btnImmunizationStatus = new JButton("Immunization Status");
-		btnImmunizationStatus.setBounds(371, 576, 165, 23);
+		btnImmunizationStatus.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String id = null;
+				if(table.getSelectedRow() > 0) {
+					id = table.getValueAt(table.getSelectedRow(), 0).toString();
+					new ImmunizationManager(id);
+				}				
+			}
+		});
+		btnImmunizationStatus.setBounds(371, 559, 165, 23);
 		panel.add(btnImmunizationStatus);
 	}
 
@@ -120,7 +131,7 @@ public class PatientSearchPanel extends JPanel {
 		new PatientViewFrame(patient, patientDetails).setVisible(true);
 	}
 
-	private void delete() {
+	/*private void delete() {
 		if(table.getSelectedRow() != -1){
 			int option = JOptionPane.showConfirmDialog(null, "Are You Sure Want to Delete.");
 			if(option == JOptionPane.NO_OPTION) return;
@@ -128,6 +139,17 @@ public class PatientSearchPanel extends JPanel {
 			Patient patient = PatientInfo.getInstance().getPatient(key);
 			PatientInfo.getInstance().delete(patient);
 			searchAndUpdate();
+		}else{
+			JOptionPane.showMessageDialog(this, "Select a row from table to delete");
+		}
+	}*/
+	private void edit(){
+		if(table.getSelectedRow() != -1){
+			String key = table.getModel().getValueAt(table.getSelectedRow(), 0).toString();
+			Patient patient = PatientInfo.getInstance().getPatient(key);
+			PatientDetails patientDetails = PatientInfo.getInstance().getPatientDetails(patient);
+			System.out.println("Edit func called: "+key);
+			new PatientEditFrame(patient, patientDetails).setVisible(true);
 		}else{
 			JOptionPane.showMessageDialog(this, "Select a row from table to delete");
 		}

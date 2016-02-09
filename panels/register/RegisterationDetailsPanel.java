@@ -10,6 +10,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 import database.PatientTableProcessing;
+import dto.CustomDate;
 import dto.Patient;
 import dto.PatientDetails;
 import panels.DatePanel;
@@ -17,7 +18,6 @@ import storage.PatientInfo;
 
 import javax.swing.JRadioButton;
 import javax.swing.ButtonGroup;
-import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
@@ -121,7 +121,7 @@ public class RegisterationDetailsPanel extends JPanel {
 		txtPinCode.setBounds(209, 392, 307, 20);
 		panel.add(txtPinCode);
 		
-		datePanel = new DatePanel((JComponent) null);
+		datePanel = new DatePanel(null);
 		datePanel.setBounds(209, 105, 415, 39);
 		panel.add(datePanel);
 		
@@ -156,6 +156,24 @@ public class RegisterationDetailsPanel extends JPanel {
 		
 		textInfo = new JTextArea();
 		infoScrollPane.setViewportView(textInfo);
+		
+	}
+
+	public RegisterationDetailsPanel(Patient patient, PatientDetails patientDetails) {
+		this();
+		blockId(patient.getId());
+		if(patient.getName() != null) txtName.setText(patient.getName());
+		if(patientDetails.getIsMale()) rdbtnMale.setSelected(true);
+		else rdbtnFemale.setSelected(true);
+		if(patient.getPhoneNumber() != null) txtContact.setText(patient.getPhoneNumber());
+		if(patientDetails.getState() != null) txtState.setText(patientDetails.getState());
+		if(patientDetails.getCity() != null) txtCity.setText(patientDetails.getCity());
+		if(patientDetails.getPinCode() != null) txtPinCode.setText(patientDetails.getPinCode());
+		if(patientDetails.getDob() != null) datePanel.setDate(new CustomDate(patientDetails.getDob()));
+		if(patientDetails.getMotherName() != null) txtMother.setText(patientDetails.getMotherName());
+		if(patientDetails.getFatherName() != null) txtFather.setText(patientDetails.getFatherName());
+		if(patientDetails.getAddress() != null) textAddress.setText(patientDetails.getAddress());
+		if(patientDetails.getNotes() != null) textInfo.setText(patientDetails.getNotes());
 	}
 
 	public void reset(){
@@ -170,14 +188,30 @@ public class RegisterationDetailsPanel extends JPanel {
 		txtPinCode.setText("");
 	}
 	
+	public void update(){
+		if(!isValidUserData()) return;
+		Patient patient = getPatient();
+		PatientDetails patientDetails = getPatientDetails(patient);
+		PatientInfo.getInstance().update(patient, patientDetails);
+	}
+	
 	public boolean register() {
 		if(!isValidUserData()) return false;
-		
+		Patient patient = getPatient();
+		PatientDetails patientDetails = getPatientDetails(patient);
+		JOptionPane.showMessageDialog(this, "Registeration ID: "+patient.getId());
+		return PatientInfo.getInstance().add(patient, patientDetails);
+	}
+	
+	private Patient getPatient(){
 		Patient patient = new Patient();
 		patient.setId(new PatientTableProcessing().getNextId());
 		patient.setName(txtName.getText().trim());
 		patient.setPhoneNumber(txtContact.getText());
-		
+		return patient;
+	}
+	
+	private PatientDetails getPatientDetails(Patient patient){
 		PatientDetails patientDetails = new PatientDetails();
 		patientDetails.setId(patient.getId());
 		if(rdbtnMale.isSelected()) patientDetails.setIsMale(true);
@@ -190,9 +224,7 @@ public class RegisterationDetailsPanel extends JPanel {
 		patientDetails.setAddress(textAddress.getText());
 		patientDetails.setNotes(textInfo.getText());
 		patientDetails.setPinCode(txtPinCode.getText());
-		
-		JOptionPane.showMessageDialog(this, "Registeration ID: "+patient.getId());
-		return PatientInfo.getInstance().add(patient, patientDetails);
+		return patientDetails;
 	}
 	
 	private boolean isValidUserData() {
@@ -214,5 +246,10 @@ public class RegisterationDetailsPanel extends JPanel {
 	private boolean returnFalseWithMessage(String message){
 		JOptionPane.showMessageDialog(this, message);
 		return false;
+	}
+
+	public void blockId(String regId) {
+		txtName.setText(regId);
+		txtName.setEditable(false);
 	}
 }

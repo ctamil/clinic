@@ -1,10 +1,16 @@
 package frames;
 
 import java.awt.BorderLayout;
+import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import database.UserTableProcessing;
+import dto.User;
+import storage.UserInfo;
+
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -23,11 +29,10 @@ public class LoginPage extends JFrame {
 	private JPanel contentPane;
 	private JTextField textField;
 	private JPasswordField passwordField;
-
-	/**
-	 * Create the frame.
-	 */
+	private UserTableProcessing userTable;
+	
 	public LoginPage() {
+		userTable = new UserTableProcessing();
 		setIconImage(new ImageIcon(System.getProperty("user.dir")+"\\logo.png").getImage());
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 609, 379);
@@ -95,9 +100,16 @@ public class LoginPage extends JFrame {
 
 	private void login() {
 		String userName = textField.getText();
-		String pass = new String(passwordField.getPassword());
-		if(userName != null && pass != null && userName.equals("admin") && pass.equals("java")){
-			new MainPage().setVisible(true);
+		String password = new String(passwordField.getPassword());
+		if(userName != null && password != null && userTable.isValidUser(userName, password)){
+			User user = new User(userName, userTable.isAdmin(userName), password);
+			UserInfo.setUSER(user);
+			EventQueue.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					new MainPage().setVisible(true);
+				}
+			});
 			dispose();
 		}
 		else JOptionPane.showMessageDialog(this, "Incorrect User name or password");

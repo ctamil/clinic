@@ -14,11 +14,12 @@ public class RegisterationPanel extends JPanel {
 
 	private static final long serialVersionUID = -9176854268630485226L;
 	private RegisterationDetailsPanel registerationDetailsPanel;
-
+	private JButton btnReset;
+	private JButton btnRegister;
 
 	public RegisterationPanel() {
-		setLayout(new BorderLayout(0, 0));
 		
+		setLayout(new BorderLayout(0, 0));
 		JPanel panel = new JPanel();
 		add(panel, BorderLayout.CENTER);
 		panel.setLayout(null);
@@ -28,8 +29,8 @@ public class RegisterationPanel extends JPanel {
 		label.setBounds(31, 11, 216, 29);
 		panel.add(label);
 		
-		JButton button = new JButton("Register");
-		button.addActionListener(new ActionListener() {
+		btnRegister = new JButton("Register");
+		btnRegister.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if(registerationDetailsPanel.register()){
 					registerationDetailsPanel.reset();
@@ -37,17 +38,17 @@ public class RegisterationPanel extends JPanel {
 			}
 		});
 		
-		button.setBounds(32, 591, 138, 23);
-		panel.add(button);
+		btnRegister.setBounds(32, 591, 138, 23);
+		panel.add(btnRegister);
 		
-		JButton button_1 = new JButton("Reset");
-		button_1.addActionListener(new ActionListener() {
+		btnReset = new JButton("Reset");
+		btnReset.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				registerationDetailsPanel.reset();
 			}
 		});
-		button_1.setBounds(231, 591, 138, 23);
-		panel.add(button_1);
+		btnReset.setBounds(231, 591, 138, 23);
+		panel.add(btnReset);
 		
 		registerationDetailsPanel = new RegisterationDetailsPanel();
 		registerationDetailsPanel.setBounds(31, 46, 564, 526);

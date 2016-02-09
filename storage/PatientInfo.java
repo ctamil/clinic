@@ -79,13 +79,6 @@ public class PatientInfo {
 		}else return false;
 	}
 	
-	public void delete(Patient patient){
-		((Container)patientsKeyAsId).remove( patient.getId());
-		((Container)patientsKeyAsPhoneNumber).remove(patient.getPhoneNumber());
-		patientTable.removeFromDB(patient);
-		patientDetailsTable.removeFromDb(patient);
-	}
-	
 	/**
 	 * @param key should be phone number or id
 	 * @return
@@ -114,5 +107,12 @@ public class PatientInfo {
 		}
 		else if(type.equals("phone number")) return searchPatientByPhoneNumber(key);
 		else return searchPatientByName(key);
+	}
+
+	public void update(Patient patient, PatientDetails patientDetails) {
+		((Container)patientsKeyAsPhoneNumber).remove(patient.getPhoneNumber());
+		patientTable.updateToDB(patient);
+		patientDetailsTable.updateToDB(patientDetails);
+		patientsKeyAsPhoneNumber.add(patient, patient.getPhoneNumber());
 	}
 }

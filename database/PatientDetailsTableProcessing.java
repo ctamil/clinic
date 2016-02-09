@@ -88,5 +88,31 @@ public class PatientDetailsTableProcessing {
 		}
 		return patientDetails;
 	}
+
+	public void updateToDB(PatientDetails patientDetails) {
+		String updateQuery = "UPDATE patient_details set is_male = ?, "
+				+ "pin_code = ?,  address = ?, city = ?,  state = ? "
+				+ "dob = ?, notes = ?, father_name = ?, mother_name = ? where id = ?";
+		try(PreparedStatement pStmt = connection.prepareStatement(updateQuery)){
+			
+			pStmt.setBoolean(1, patientDetails.getIsMale());
+			pStmt.setString(2, patientDetails.getPinCode());
+			pStmt.setString(3, patientDetails.getAddress());
+			pStmt.setString(4, patientDetails.getCity());
+			pStmt.setString(5, patientDetails.getState());
+			pStmt.setDate(6, patientDetails.getDob());
+			pStmt.setString(7, patientDetails.getNotes());
+			pStmt.setString(8, patientDetails.getFatherName());
+			pStmt.setString(9, patientDetails.getMotherName());
+			pStmt.setString(10, patientDetails.getId());
+			
+			pStmt.executeUpdate();
+			
+		}catch(SQLException ex){
+			ex.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Error in saving to database: "
+					+ ""+ex.getMessage());
+		}
+	}
 	
 }

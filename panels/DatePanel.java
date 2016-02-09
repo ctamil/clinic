@@ -10,11 +10,15 @@ import javax.swing.JTextField;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 
+import dto.CustomDate;
 import javafx.embed.swing.JFXPanel;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.DatePicker;
+
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 
 public class DatePanel extends JPanel {
 	
@@ -23,10 +27,22 @@ public class DatePanel extends JPanel {
 	private JTextField textField_1;
 	private JTextField textField_2;
 	private DatePicker picker;
+	private JFXPanel fxPanel;
 	/**
 	 * Create the panel.
 	 */
 	public DatePanel(JComponent nextComponentToFocus) {
+		addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusLost(FocusEvent e) {
+				fxPanel = null;
+			}
+			
+			@Override
+			public void focusGained(FocusEvent e){
+				setDatepicker();
+			}
+		});
 		setLayout(null);
 		
 		textField = new JTextField();
@@ -59,8 +75,9 @@ public class DatePanel extends JPanel {
 						int day = Integer.parseInt(textField.getText());
 						int month = Integer.parseInt(textField_1.getText());
 						int year = Integer.parseInt(textField_2.getText());
+						picker.setValue(null);
 						picker.setValue(LocalDate.of(year, month, day));
-						if(nextComponentToFocus != null )nextComponentToFocus.requestFocusInWindow();
+						if(nextComponentToFocus != null ) nextComponentToFocus.requestFocusInWindow();
 				}
 			}
 		});
@@ -75,17 +92,12 @@ public class DatePanel extends JPanel {
 		JLabel label_1 = new JLabel("/");
 		label_1.setBounds(104, 14, 13, 14);
 		add(label_1);
-
-		JFXPanel panel = new JFXPanel();
-		panel.setBounds(176, 11, 133, 20);
-		add(panel);
-
-		picker = new DatePicker();
-		panel.setScene(new Scene(picker));
 		
 		JLabel label_2 = new JLabel(":");
 		label_2.setBounds(166, 14, 20, 14);
 		add(label_2);
+		
+		setDatepicker();
 		picker.addEventHandler(ActionEvent.ACTION, new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
@@ -99,9 +111,26 @@ public class DatePanel extends JPanel {
 				if(!textField_2.getText().equals(year)) textField_2.setText(year);
 			}
 		});
+		
+		
 	}
 
 	
+	protected void setDatepicker() {
+		fxPanel = new JFXPanel();
+		fxPanel.setBounds(176, 11, 133, 20);
+		add(fxPanel);
+
+		picker = new DatePicker();
+		java.awt.EventQueue.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				fxPanel.setScene(new Scene(picker));
+			}
+		});
+	}
+
+
 	public void reset(){
 		textField.setText("");
 		textField_1.setText("");
@@ -118,5 +147,10 @@ public class DatePanel extends JPanel {
 		cal.set(Calendar.YEAR, date.getYear());
 		
 		return cal;
+	}
+	
+	public void setDate(CustomDate date){
+		if(date != null) picker.setValue(LocalDate.of(date.getYear(), 
+				date.getMonth(), date.getDay()));
 	}
 }
