@@ -132,7 +132,7 @@ public class AddStockPanel extends JPanel implements ActionListener {
 		panel.add(comboBox);
 		categoryTable.updateCategory(comboBox);
 		
-		datePanel = new DatePanel(txtPrice);
+		datePanel = DatePanel.getInstance(txtPrice);
 		datePanel.setBounds(157, 145, 327, 47);
 		panel.add(datePanel);
 		

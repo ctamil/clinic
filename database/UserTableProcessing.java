@@ -11,12 +11,16 @@ import javax.swing.JOptionPane;
 import ds.LinkedList;
 import dto.User;
 
-public class UserTableProcessing {
+public class UserTableProcessing extends TableProcessing{
 	
 	private Connection connection;
 
 	public UserTableProcessing() {
 		connection = DatabaseConnection.getConnection();
+	}
+	
+	public int getSize(){
+		return getSize("user");
 	}
 	
 	public LinkedList userList(){
@@ -98,5 +102,20 @@ public class UserTableProcessing {
 			JOptionPane.showMessageDialog(null, "Error in User table processing: "+e.getMessage());
 			e.printStackTrace();
 		}
+	}
+
+	public User getUser(String userName) {
+		String query = "select is_admin from user where name = '"+userName+"'";
+		try(ResultSet result = connection.createStatement().executeQuery(query)){
+			if(result.first()){
+				boolean isAdmin = result.getBoolean("is_admin");
+				User user = new User(userName, isAdmin);
+				return user;
+			}
+		}catch (SQLException e) {
+			JOptionPane.showMessageDialog(null, "Error in User table processing: "+e.getMessage());
+			e.printStackTrace();
+		}
+		return null;
 	}
 }

@@ -55,7 +55,7 @@ public class BillingPanel extends JPanel {
 	public BillingPanel() {
 		categoryTable = new CategoryTableProcessing();
 		stockTable = new StockTableProcessing();
-		setBounds(100, 100, 784, 663);
+		setBounds(100, 100, 784, 593);
 		setBorder(new EmptyBorder(5, 5, 5, 5));
 		setLayout(new BorderLayout(0, 0));
 		
@@ -77,7 +77,7 @@ public class BillingPanel extends JPanel {
 		panel.add(lblQuantity);
 		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 249, 754, 334);
+		scrollPane.setBounds(10, 249, 754, 283);
 		panel.add(scrollPane);
 		
 		table = new JTable();
@@ -120,7 +120,7 @@ public class BillingPanel extends JPanel {
 		updateItems();
 		
 		JLabel lblTotalAmount = new JLabel("Total Amount:");
-		lblTotalAmount.setBounds(435, 609, 152, 14);
+		lblTotalAmount.setBounds(435, 550, 152, 14);
 		panel.add(lblTotalAmount);
 		
 		JButton btnGenerateBill = new JButton("Save");
@@ -133,7 +133,7 @@ public class BillingPanel extends JPanel {
 				}else System.out.println("no bill");
 			}
 		});
-		btnGenerateBill.setBounds(10, 605, 105, 23);
+		btnGenerateBill.setBounds(10, 546, 105, 23);
 		panel.add(btnGenerateBill);
 		
 		JButton btnGeneratePrint = new JButton("Save & Print");
@@ -147,13 +147,13 @@ public class BillingPanel extends JPanel {
 				}
 			}
 		});
-		btnGeneratePrint.setBounds(125, 605, 126, 23);
+		btnGeneratePrint.setBounds(125, 546, 126, 23);
 		panel.add(btnGeneratePrint);
 		
 		label = new JLabel("0.0");
 		label.setForeground(Color.BLUE);
 		label.setFont(new Font("Times New Roman", Font.BOLD, 18));
-		label.setBounds(597, 602, 143, 29);
+		label.setBounds(597, 543, 143, 29);
 		panel.add(label);
 		
 		JButton btnRefresh = new JButton("Refresh");
@@ -172,7 +172,7 @@ public class BillingPanel extends JPanel {
 				reset();
 			}
 		});
-		btnNewButton.setBounds(261, 605, 89, 23);
+		btnNewButton.setBounds(261, 546, 89, 23);
 		panel.add(btnNewButton);
 		
 		JLabel lblCategory = new JLabel("Category");
@@ -246,7 +246,7 @@ public class BillingPanel extends JPanel {
 		}
 
 		Float docterFee = Float.parseFloat(txtFee.getText());
-		Bill bill = new Bill(patient, UserInfo.getUser(), new BillTableProcessing().nextId(), docterFee);
+		Bill bill = new Bill(patient, UserInfo.getUser(), new BillTableProcessing().nextBillNo(), docterFee);
 		for(int i=0; i<table.getRowCount(); i++){
 
 			String itemName = table.getValueAt(i, 0).toString();
@@ -259,8 +259,10 @@ public class BillingPanel extends JPanel {
 			bill.addItem(item);
 		}
 		if(stockTable.updateBill(bill)) {
-			new BillTableProcessing().addId(bill.getId());
-			return new BillManager(bill).generateBill(); 
+			File file = new BillManager(bill).generateBill();
+			bill.setFile(file.getAbsolutePath());
+			new BillTableProcessing().addToDB(bill);
+			return file;
 		}
 		else return null;
 	}
@@ -287,8 +289,8 @@ public class BillingPanel extends JPanel {
 			model.setValueAt(table.getValueAt(i, 1), i, 1);
 			model.setValueAt(table.getValueAt(i, 2), i, 2);
 			model.setValueAt(table.getValueAt(i, 3), i, 3);
-			model.setValueAt(table.getValueAt(i, 3), i, 4);
-			model.setValueAt(table.getValueAt(i, 3), i, 5);
+			model.setValueAt(table.getValueAt(i, 4), i, 4);
+			model.setValueAt(table.getValueAt(i, 5), i, 5);
 			
 		}
 		table.setModel(model);
@@ -318,12 +320,12 @@ public class BillingPanel extends JPanel {
 	private boolean isValidToAddInTable() {
 		
 		String item = itemComboBox.getSelectedItem().toString();
-		for(int i=0; i<table.getRowCount(); i++){
+		/*for(int i=0; i<table.getRowCount(); i++){
 			if(item.equals(table.getValueAt(i, 0))) {
 				JOptionPane.showMessageDialog(this, "Item already in billing table");
 				return false;
 			}
-		}
+		}*/
 		
 		int billedQty = 0;
 		try{

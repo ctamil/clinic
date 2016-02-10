@@ -61,7 +61,7 @@ public class BillGenerator {
 	 */
 	private static void init(Bill bill, String outputPath, File inFile) {
 		BillGenerator.bill = bill;
-		outFile = new File(outputPath+"\\"+BillGenerator.bill.getId()+".docx");
+		outFile = new File(outputPath+"\\"+BillGenerator.bill.getBillNo()+".docx");
 		try {
 			doc = new XWPFDocument(new FileInputStream(inFile));
 		} catch (FileNotFoundException e) {
@@ -107,7 +107,7 @@ public class BillGenerator {
 		int month = currCal.get(Calendar.MONTH);
 		int year = currCal.get(Calendar.YEAR);
 		
-		addToCell(bill.getId() + "", firstRow.getCell(0), 10);
+		addToCell(bill.getBillNo() + "", firstRow.getCell(0), 10);
 		addToCell(bill.getPatient().getId(), firstRow.getCell(1), 10);
 		addToCell(bill.getPatient().getName(), secondRow.getCell(0), 10);
 		addToCell(date + "." + month + "." + year, secondRow.getCell(1), 10);

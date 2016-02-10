@@ -1,4 +1,4 @@
-package frames;
+package frames.patients;
 
 import java.awt.BorderLayout;
 

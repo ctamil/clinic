@@ -11,7 +11,12 @@ import javax.swing.JOptionPane;
 import dto.Patient;
 import dto.PatientDetails;
 
-public class PatientDetailsTableProcessing {
+public class PatientDetailsTableProcessing extends TableProcessing{
+	
+
+	public int getSize() {
+		return getSize("patient_details");
+	}
 	
 	private Connection connection;
 	
@@ -91,8 +96,8 @@ public class PatientDetailsTableProcessing {
 
 	public void updateToDB(PatientDetails patientDetails) {
 		String updateQuery = "UPDATE patient_details set is_male = ?, "
-				+ "pin_code = ?,  address = ?, city = ?,  state = ? "
-				+ "dob = ?, notes = ?, father_name = ?, mother_name = ? where id = ?";
+				+ "pin_code = ?,  address = ?, city = ?,  state = ?, "
+				+ "dob = ?, notes = ?, father_name = ?, mother_name = ? where id = ?;";
 		try(PreparedStatement pStmt = connection.prepareStatement(updateQuery)){
 			
 			pStmt.setBoolean(1, patientDetails.getIsMale());

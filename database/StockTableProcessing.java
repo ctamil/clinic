@@ -15,7 +15,7 @@ import dto.Bill;
 import dto.CustomDate;
 import dto.Item;
 
-public class StockTableProcessing {
+public class StockTableProcessing extends TableProcessing{
 
 	private Connection connection;
 
@@ -24,15 +24,7 @@ public class StockTableProcessing {
 	}
 
 	public int getSize() {
-		ResultSet result = null;
-		try(Statement stmt = connection.createStatement()) {
-			result = stmt.executeQuery("select count(*) from stock;");
-			if(result.first()) return result.getInt(1);
-		} catch (SQLException e) {
-			JOptionPane.showMessageDialog(null, "Error in Stock table processing: "+e.getMessage());
-			e.printStackTrace();
-		}
-		return 0;
+		return getSize("stock");
 	}
 
 	public boolean addToDB(Item item){

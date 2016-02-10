@@ -17,32 +17,26 @@ import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.DatePicker;
 
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-
 public class DatePanel extends JPanel {
-	
+
 	private static final long serialVersionUID = 1L;
 	private JTextField textField;
 	private JTextField textField_1;
 	private JTextField textField_2;
 	private DatePicker picker;
 	private JFXPanel fxPanel;
-	/**
-	 * Create the panel.
-	 */
-	public DatePanel(JComponent nextComponentToFocus) {
-		addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusLost(FocusEvent e) {
-				fxPanel = null;
-			}
-			
-			@Override
-			public void focusGained(FocusEvent e){
-				setDatepicker();
-			}
-		});
+	private static DatePanel INSTANCE;
+	
+	public static DatePanel getInstance(JComponent nextComponentToFocus){
+		if(INSTANCE == null) INSTANCE = new DatePanel(nextComponentToFocus);;
+		return INSTANCE;
+	}
+	
+	public static DatePanel getInstance(){
+		return getInstance(null);
+	}
+	
+	private DatePanel(JComponent nextComponentToFocus) {
 		setLayout(null);
 		
 		textField = new JTextField();
@@ -96,8 +90,8 @@ public class DatePanel extends JPanel {
 		JLabel label_2 = new JLabel(":");
 		label_2.setBounds(166, 14, 20, 14);
 		add(label_2);
-		
-		setDatepicker();
+	
+		setDatePicker();
 		picker.addEventHandler(ActionEvent.ACTION, new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
@@ -111,12 +105,16 @@ public class DatePanel extends JPanel {
 				if(!textField_2.getText().equals(year)) textField_2.setText(year);
 			}
 		});
-		
-		
 	}
 
+	@Override
+	public void setVisible(boolean aFlag) {
+		setDatePicker();
+		System.out.println("Set visible called");
+		super.setVisible(aFlag);
+	}
 	
-	protected void setDatepicker() {
+	private void setDatePicker() {
 		fxPanel = new JFXPanel();
 		fxPanel.setBounds(176, 11, 133, 20);
 		add(fxPanel);
@@ -130,12 +128,10 @@ public class DatePanel extends JPanel {
 		});
 	}
 
-
 	public void reset(){
 		textField.setText("");
 		textField_1.setText("");
 		textField_2.setText("");
-		picker.setValue(null);
 	}
 
 	public Calendar getCalender() {

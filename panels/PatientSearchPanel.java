@@ -20,8 +20,8 @@ import storage.PatientInfo;
 import ds.Traveller;
 import dto.Patient;
 import dto.PatientDetails;
-import frames.PatientEditFrame;
-import frames.PatientViewFrame;
+import frames.patients.PatientEditFrame;
+import frames.patients.PatientHistoryFrame;
 import immunization.ImmunizationManager;
 
 import javax.swing.JComboBox;
@@ -87,22 +87,13 @@ public class PatientSearchPanel extends JPanel {
 		btnSearch.setBounds(481, 7, 130, 23);
 		panel.add(btnSearch);
 		
-		JButton btnViewPatientDetails = new JButton("View Patient Details");
-		btnViewPatientDetails.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				viewPatientDetails();
-			}
-		});
-		btnViewPatientDetails.setBounds(10, 559, 191, 23);
-		panel.add(btnViewPatientDetails);
-		
-		JButton btnDeletePatient = new JButton("Edit ");
+		JButton btnDeletePatient = new JButton("View And Edit ");
 		btnDeletePatient.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				edit();
 			}
 		});
-		btnDeletePatient.setBounds(221, 559, 130, 23);
+		btnDeletePatient.setBounds(10, 559, 130, 23);
 		panel.add(btnDeletePatient);
 		
 		comboBox = new JComboBox<>();
@@ -114,21 +105,27 @@ public class PatientSearchPanel extends JPanel {
 		btnImmunizationStatus.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String id = null;
-				if(table.getSelectedRow() > 0) {
+				if(table.getSelectedRow() >= 0) {
 					id = table.getValueAt(table.getSelectedRow(), 0).toString();
-					new ImmunizationManager(id);
+					new ImmunizationManager(id).openOutFile();
 				}				
 			}
 		});
-		btnImmunizationStatus.setBounds(371, 559, 165, 23);
+		btnImmunizationStatus.setBounds(308, 559, 165, 23);
 		panel.add(btnImmunizationStatus);
-	}
-
-	private void viewPatientDetails() {
-		String id = table.getModel().getValueAt(table.getSelectedRow(), 0).toString();
-		Patient patient = PatientInfo.getInstance().getPatient(id);
-		PatientDetails patientDetails = PatientInfo.getInstance().getPatientDetails(patient);
-		new PatientViewFrame(patient, patientDetails).setVisible(true);
+		
+		JButton btnPatientHistory = new JButton("Patient History");
+		btnPatientHistory.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String id = null;
+				if(table.getSelectedRow() >= 0) {
+					id = table.getValueAt(table.getSelectedRow(), 0).toString();
+					new PatientHistoryFrame(id).setVisible(true);
+				}
+			}
+		});
+		btnPatientHistory.setBounds(159, 559, 126, 23);
+		panel.add(btnPatientHistory);
 	}
 
 	/*private void delete() {

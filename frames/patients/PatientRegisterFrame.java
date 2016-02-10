@@ -1,4 +1,4 @@
-package frames;
+package frames.patients;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;

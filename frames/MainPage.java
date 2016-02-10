@@ -1,7 +1,6 @@
 package frames;
 
 import java.awt.BorderLayout;
-import java.awt.Event;
 import java.awt.EventQueue;
 
 import javax.swing.ImageIcon;
@@ -10,6 +9,7 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.border.EmptyBorder;
 
+import frames.patients.PatientRegisterFrame;
 import panels.AvailableStockPanel;
 import panels.BillingPanel;
 import panels.PatientSearchPanel;
@@ -31,7 +31,7 @@ public class MainPage extends JFrame {
 	
 	public MainPage() {
 		setIconImage(new ImageIcon(System.getProperty("user.dir")+"\\logo.png").getImage());
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(0, 0, 800, 719);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));

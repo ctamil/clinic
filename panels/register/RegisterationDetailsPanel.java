@@ -121,7 +121,7 @@ public class RegisterationDetailsPanel extends JPanel {
 		txtPinCode.setBounds(209, 392, 307, 20);
 		panel.add(txtPinCode);
 		
-		datePanel = new DatePanel(null);
+		datePanel = DatePanel.getInstance();
 		datePanel.setBounds(209, 105, 415, 39);
 		panel.add(datePanel);
 		
@@ -161,7 +161,6 @@ public class RegisterationDetailsPanel extends JPanel {
 
 	public RegisterationDetailsPanel(Patient patient, PatientDetails patientDetails) {
 		this();
-		blockId(patient.getId());
 		if(patient.getName() != null) txtName.setText(patient.getName());
 		if(patientDetails.getIsMale()) rdbtnMale.setSelected(true);
 		else rdbtnFemale.setSelected(true);
@@ -246,10 +245,5 @@ public class RegisterationDetailsPanel extends JPanel {
 	private boolean returnFalseWithMessage(String message){
 		JOptionPane.showMessageDialog(this, message);
 		return false;
-	}
-
-	public void blockId(String regId) {
-		txtName.setText(regId);
-		txtName.setEditable(false);
 	}
 }

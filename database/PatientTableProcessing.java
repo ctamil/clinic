@@ -14,7 +14,7 @@ import javax.swing.JOptionPane;
 import ds.Container;
 import dto.Patient;
 
-public class PatientTableProcessing {
+public class PatientTableProcessing extends TableProcessing{
 
 private Connection connection;
 	
@@ -23,16 +23,7 @@ private Connection connection;
 	}
 	
 	public int getSize() {
-		ResultSet result = null;
-		try(Statement stmt = connection.createStatement()) {
-			result = stmt.executeQuery("select count(*) from patient;");
-			if(result.first()) return result.getInt(1);
-		} catch (SQLException e) {
-			JOptionPane.showMessageDialog(null, "Error in Patien table processing: "
-					+ ""+e.getMessage());
-			e.printStackTrace();
-		}
-		return 0;
+		return getSize("patient");
 	}
 
 	public boolean addToDB(Patient patient){
@@ -124,7 +115,7 @@ private Connection connection;
 	}
 
 	public void updateToDB(Patient patient) {
-		String updateQuery = "UPDATE patient set name = ?, phone_number = ?, where id = ?";
+		String updateQuery = "UPDATE patient set name = ?, phone_number = ? where id = ?;";
 		try(PreparedStatement pStmt = connection.prepareStatement(updateQuery)){
 			
 			pStmt.setString(1, patient.getName());
