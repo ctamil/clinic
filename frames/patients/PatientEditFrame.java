@@ -17,6 +17,7 @@ public class PatientEditFrame extends JFrame {
 
 	private static final long serialVersionUID = -7048120901151460017L;
 	private JPanel contentPane;
+	private RegisterationDetailsPanel regDetailsPanel;
 
 	/**
 	 * Create the frame.
@@ -33,7 +34,7 @@ public class PatientEditFrame extends JFrame {
 		contentPane.add(panel, BorderLayout.CENTER);
 		panel.setLayout(null);
 		
-		RegisterationDetailsPanel regDetailsPanel = new RegisterationDetailsPanel(patient, patientDetails);
+		regDetailsPanel = new RegisterationDetailsPanel(patient, patientDetails);
 		regDetailsPanel.setBounds(10, 11, 728, 529);
 		panel.add(regDetailsPanel);
 		

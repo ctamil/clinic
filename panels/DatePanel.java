@@ -1,31 +1,22 @@
 package panels;
 
-import java.time.LocalDate;
 import java.util.Calendar;
 
 import javax.swing.JComponent;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.event.CaretEvent;
-import javax.swing.event.CaretListener;
 
 import dto.CustomDate;
-import javafx.embed.swing.JFXPanel;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.scene.Scene;
-import javafx.scene.control.DatePicker;
+import javax.swing.JComboBox;
+import java.awt.event.ItemListener;
+import java.awt.event.ItemEvent;
+import javax.swing.DefaultComboBoxModel;
 
 public class DatePanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
-	private JTextField textField;
-	private JTextField textField_1;
-	private JTextField textField_2;
-	private DatePicker picker;
-	private JFXPanel fxPanel;
 	private static DatePanel INSTANCE;
+	private JComboBox<String> comboBoxYear, comboBoxMonth, comboBoxDay;
+	
 	
 	public static DatePanel getInstance(JComponent nextComponentToFocus){
 		if(INSTANCE == null) INSTANCE = new DatePanel(nextComponentToFocus);;
@@ -39,114 +30,108 @@ public class DatePanel extends JPanel {
 	private DatePanel(JComponent nextComponentToFocus) {
 		setLayout(null);
 		
-		textField = new JTextField();
-		textField.setToolTipText("Day");
-		textField.addCaretListener(new CaretListener() {
-			public void caretUpdate(CaretEvent arg0) {
-				if(textField.getText().length() == 2) textField_1.requestFocusInWindow();
+		comboBoxYear = new JComboBox<>();
+		comboBoxYear.setBounds(0, 11, 91, 20);
+		fillYear();
+		add(comboBoxYear);
+		
+		comboBoxMonth = new JComboBox<>();
+		comboBoxMonth.setModel(new DefaultComboBoxModel<String>(new String[] {"1 - January", "2 - February", "3 - March", "4 - April", "5 - May", "6 - June", "7 - July", "8 - August", "9 - September", "10 - October", "11 - November", "12 - December"}));
+		comboBoxMonth.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				updateComboBoxDay();
 			}
 		});
-		textField.setBounds(0, 11, 32, 20);
-		add(textField);
-		textField.setColumns(10);
+		comboBoxMonth.setBounds(101, 11, 113, 20);
+		add(comboBoxMonth);
 		
-		textField_1 = new JTextField();
-		textField_1.setToolTipText("Month");
-		textField_1.addCaretListener(new CaretListener() {
-			public void caretUpdate(CaretEvent arg0) {
-				if(textField_1.getText().length() == 2) textField_2.requestFocusInWindow();
-			}
-		});
-		textField_1.setColumns(10);
-		textField_1.setBounds(52, 11, 42, 20);
-		add(textField_1);
-		
-		textField_2 = new JTextField();
-		textField_2.setToolTipText("Year");
-		textField_2.addCaretListener(new CaretListener() {
-			public void caretUpdate(CaretEvent arg0) {
-				if(textField_2.getText().length() == 4) {
-						int day = Integer.parseInt(textField.getText());
-						int month = Integer.parseInt(textField_1.getText());
-						int year = Integer.parseInt(textField_2.getText());
-						picker.setValue(null);
-						picker.setValue(LocalDate.of(year, month, day));
-						if(nextComponentToFocus != null ) nextComponentToFocus.requestFocusInWindow();
-				}
-			}
-		});
-		textField_2.setColumns(10);
-		textField_2.setBounds(114, 11, 42, 20);
-		add(textField_2);
-
-		JLabel label = new JLabel("/");
-		label.setBounds(42, 14, 13, 14);
-		add(label);
-
-		JLabel label_1 = new JLabel("/");
-		label_1.setBounds(104, 14, 13, 14);
-		add(label_1);
-		
-		JLabel label_2 = new JLabel(":");
-		label_2.setBounds(166, 14, 20, 14);
-		add(label_2);
+		comboBoxDay = new JComboBox<>();
+		comboBoxDay.setBounds(224, 11, 65, 20);
+		add(comboBoxDay);
 	
-		setDatePicker();
-		picker.addEventHandler(ActionEvent.ACTION, new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				LocalDate date = picker.getValue();
-				if(date == null) return;
-				String day = String.valueOf(date.getDayOfMonth());
-				String month = String.valueOf(date.getMonthValue());
-				String year = String.valueOf(date.getYear());
-				if(!textField.getText().equals(day)) textField.setText(day);
-				if(!textField_1.getText().equals(month)) textField_1.setText(month);
-				if(!textField_2.getText().equals(year)) textField_2.setText(year);
-			}
-		});
-	}
-
-	@Override
-	public void setVisible(boolean aFlag) {
-		setDatePicker();
-		System.out.println("Set visible called");
-		super.setVisible(aFlag);
 	}
 	
-	private void setDatePicker() {
-		fxPanel = new JFXPanel();
-		fxPanel.setBounds(176, 11, 133, 20);
-		add(fxPanel);
+	private void fillYear() {
+		int end = Calendar.getInstance().get(Calendar.YEAR);
+		int start = end - 17;
+		while(++start <= end) comboBoxYear.addItem(String.valueOf(start)); 
+	}
 
-		picker = new DatePicker();
-		java.awt.EventQueue.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				fxPanel.setScene(new Scene(picker));
-			}
-		});
+	private void updateComboBoxDay() {
+		if(comboBoxYear != null && comboBoxMonth != null)
+			if(comboBoxYear.getSelectedIndex() > -1 && comboBoxMonth.getSelectedIndex() > -1)
+				updateComboBoxDay(Integer.parseInt(comboBoxYear.getSelectedItem().toString()), comboBoxMonth.getSelectedIndex()+1);
+	}
+
+	private void updateComboBoxDay(int year, int month) {
+		if(comboBoxDay.getItemCount() > 0)comboBoxDay.removeAllItems();
+		int start = 0;
+		int end = getDaysOfMonth(year, month);
+		while(++start <= end) comboBoxDay.addItem(String.valueOf(start));
 	}
 
 	public void reset(){
-		textField.setText("");
-		textField_1.setText("");
-		textField_2.setText("");
+		comboBoxYear.setSelectedIndex(-1);
+		comboBoxMonth.setSelectedIndex(-1);
+		if(comboBoxDay.getItemCount() > 0) comboBoxDay.setSelectedIndex(-1); //if it has items
 	}
 
 	public Calendar getCalender() {
-		LocalDate date = picker.getValue();
-		if(date == null) return null;
 		Calendar cal = Calendar.getInstance();
-		cal.set(Calendar.DAY_OF_MONTH, date.getDayOfMonth());
-		cal.set(Calendar.MONTH, date.getMonthValue()-1);
-		cal.set(Calendar.YEAR, date.getYear());
-		
+		int year = Integer.parseInt(comboBoxYear.getSelectedItem().toString());
+		int month = comboBoxMonth.getSelectedIndex()+1;
+		int day = comboBoxDay.getSelectedIndex()+1;
+		cal.set(year, month, day);
 		return cal;
 	}
 	
 	public void setDate(CustomDate date){
-		if(date != null) picker.setValue(LocalDate.of(date.getYear(), 
-				date.getMonth(), date.getDay()));
+		if(containsYear(date.getYear())) comboBoxYear.setSelectedItem(date.getYear());
+		else {
+			comboBoxYear.addItem(String.valueOf(date.getYear()));
+			setDate(date);
+		}
+		comboBoxMonth.setSelectedIndex(date.getMonth()-1);
+		comboBoxDay.setSelectedIndex(date.getDay()-1);
+	}
+	
+	private boolean containsYear(int year) {
+		for(int i=0; i<comboBoxYear.getItemCount(); i++) if(String.valueOf(year).equals(comboBoxYear.getItemAt(i))) return true;
+		return false;
+	}
+
+	public int getDaysOfMonth(int year, int month){
+		int days = -1;
+		switch(month){
+		case 1:  //Janaury
+		case 3: 
+		case 5:
+		case 7:
+		case 8:
+		case 10:
+		case 12: days = 31; break;
+		case 4:
+		case 6:
+		case 9:
+		case 11: days = 30; break;
+		case 2: return getDaysOFMonthOfFeb(year); //check for leap year
+		}
+		return days;
+	}
+
+	/*
+	 * Method source... 
+	 * 	1. If the year is evenly divisible by 4, go to step 2. Otherwise, go to step 5.
+	 * 	2. If the year is evenly divisible by 100, go to step 3. Otherwise, go to step 4.
+	 *	3. If the year is evenly divisible by 400, go to step 4. Otherwise, go to step 5.
+	 *	4. The year is a leap year (it has 366 days).
+	 *	5. he year is not a leap year (it has 365 days).
+	 */
+	private int getDaysOFMonthOfFeb(int year) {
+		if(year % 4 == 0) {
+			if(year % 100 == 0 && year % 400 != 0) return 28;
+			else return 29;
+		}
+		else return 28;
 	}
 }
