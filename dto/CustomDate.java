@@ -4,12 +4,10 @@ import java.util.Calendar;
 
 public class CustomDate {
 
-	private int year, month, day;
-	private Calendar calendar;
+	private int year, month/*0-11*/, day;
 
 	private CustomDate() {
 		super();
-		calendar = Calendar.getInstance();
 	}
 	
 	public CustomDate(int year, int month, int day) {
@@ -23,60 +21,49 @@ public class CustomDate {
 		this();
 		String split[] = date.split("[.]");
 		setDay(Integer.parseInt(split[0]));
-		setMonth(Integer.parseInt(split[1]));
+		setMonth(Integer.parseInt(split[1])-1);
 		setYear(Integer.parseInt(split[2]));
 	}
 	
 	public CustomDate(java.sql.Date date){
 		this();
-		calendar = Calendar.getInstance();
-		calendar.setTimeInMillis(date.getTime());
-		sync(calendar);
-	}
-	
-	private void sync(Calendar calendar) {
-		setYear(calendar.get(Calendar.YEAR));
-		setMonth(calendar.get(Calendar.MONTH)+1); //months in calendar starts with zero.
-		setDay(calendar.get(Calendar.DAY_OF_MONTH));
+		Calendar cal = Calendar.getInstance();
+		cal.setTimeInMillis(date.getTime());
+		setDay(cal.get(Calendar.DAY_OF_MONTH));
+		setMonth(cal.get(Calendar.MONTH));
+		setYear(cal.get(Calendar.YEAR));
 	}
 
-	public CustomDate(Calendar calendar){
-		this();
-		sync(calendar);
-	}
-	
-	public Calendar getCalender(){
-		return calendar;
-	}
-	
 	public java.sql.Date getSQLDate(){
-		return new java.sql.Date(calendar.getTimeInMillis());
+		Calendar cal = Calendar.getInstance();
+		cal.set(getYear(), getMonth(), getDay());
+		return new java.sql.Date(cal.getTimeInMillis());
+	}
+	
+	public Calendar getCalenderDate(){
+		Calendar cal = Calendar.getInstance();
+		cal.set(getYear(), getMonth(), getDay());
+		return cal;
 	}
 
 	public int getYear() {
 		return year;
 	}
-
 	private void setYear(int year) {
-		calendar.set(Calendar.YEAR, year);
 		this.year = year;
 	}
 
 	public int getMonth() {
 		return month;
 	}
-
 	private void setMonth(int month) {
-		calendar.set(Calendar.MONTH, month-1);
 		this.month = month;
 	}
 
 	public int getDay() {
 		return day;
 	}
-
 	private void setDay(int day) {
-		calendar.set(Calendar.DAY_OF_MONTH, day);
 		this.day = day;
 	}
 	
@@ -84,7 +71,7 @@ public class CustomDate {
 	public String toString() {
 		String sDay = String.valueOf(day);
 		sDay = sDay.length() == 1 ? 0+sDay : sDay;  //insert zero in starting if it has only single value.
-		String sMonth = String.valueOf(month);
+		String sMonth = String.valueOf(month+1); /* (0 - 11) -->> (1 - 12) */ 
 		sMonth = sMonth.length() == 1 ? "0"+sMonth : sMonth;
 		return sDay+"."+sMonth+"."+year;
 	}	

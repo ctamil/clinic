@@ -10,6 +10,8 @@ import javax.swing.JComboBox;
 import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
 import javax.swing.DefaultComboBoxModel;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class DatePanel extends JPanel {
 
@@ -36,6 +38,11 @@ public class DatePanel extends JPanel {
 		add(comboBoxYear);
 		
 		comboBoxMonth = new JComboBox<>();
+		comboBoxMonth.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				updateComboBoxDay();
+			}
+		});
 		comboBoxMonth.setModel(new DefaultComboBoxModel<String>(new String[] {"1 - January", "2 - February", "3 - March", "4 - April", "5 - May", "6 - June", "7 - July", "8 - August", "9 - September", "10 - October", "11 - November", "12 - December"}));
 		comboBoxMonth.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
@@ -51,10 +58,20 @@ public class DatePanel extends JPanel {
 	
 	}
 	
+	public CustomDate getDate(){
+		if(comboBoxYear != null && comboBoxMonth != null && comboBoxDay != null &&
+				comboBoxDay.getSelectedIndex() > -1 && comboBoxMonth.getSelectedIndex() > -1 && comboBoxYear.getSelectedIndex() > -1){
+			int year = Integer.parseInt(comboBoxYear.getSelectedItem().toString());
+			int month = comboBoxMonth.getSelectedIndex();
+			System.out.println("Selected Month Index: "+month);
+			int day = Integer.parseInt(comboBoxDay.getSelectedItem().toString());
+				return new CustomDate(year, month, day);
+		}else return null;
+	}
+	
 	private void fillYear() {
-		int end = Calendar.getInstance().get(Calendar.YEAR);
-		int start = end - 17;
-		while(++start <= end) comboBoxYear.addItem(String.valueOf(start)); 
+		int start = Calendar.getInstance().get(Calendar.YEAR) - 17;
+		while(++start <= 2099) comboBoxYear.addItem(String.valueOf(start));
 	}
 
 	private void updateComboBoxDay() {
@@ -75,23 +92,15 @@ public class DatePanel extends JPanel {
 		comboBoxMonth.setSelectedIndex(-1);
 		if(comboBoxDay.getItemCount() > 0) comboBoxDay.setSelectedIndex(-1); //if it has items
 	}
-
-	public Calendar getCalender() {
-		Calendar cal = Calendar.getInstance();
-		int year = Integer.parseInt(comboBoxYear.getSelectedItem().toString());
-		int month = comboBoxMonth.getSelectedIndex()+1;
-		int day = comboBoxDay.getSelectedIndex()+1;
-		cal.set(year, month, day);
-		return cal;
-	}
 	
 	public void setDate(CustomDate date){
-		if(containsYear(date.getYear())) comboBoxYear.setSelectedItem(date.getYear());
+		
+		if(containsYear(date.getYear())) comboBoxYear.setSelectedItem(String.valueOf(date.getYear()));
 		else {
 			comboBoxYear.addItem(String.valueOf(date.getYear()));
 			setDate(date);
 		}
-		comboBoxMonth.setSelectedIndex(date.getMonth()-1);
+		comboBoxMonth.setSelectedIndex(date.getMonth());
 		comboBoxDay.setSelectedIndex(date.getDay()-1);
 	}
 	
@@ -110,7 +119,7 @@ public class DatePanel extends JPanel {
 		case 8:
 		case 10:
 		case 12: days = 31; break;
-		case 4:
+		case 4: 
 		case 6:
 		case 9:
 		case 11: days = 30; break;

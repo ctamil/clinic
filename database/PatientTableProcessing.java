@@ -114,9 +114,11 @@ private Connection connection;
 		return patients;
 	}
 
-	public void updateToDB(Patient patient) {
+	public boolean updateToDB(Patient patient) {
 		String updateQuery = "UPDATE patient set name = ?, phone_number = ? where id = ?;";
 		try(PreparedStatement pStmt = connection.prepareStatement(updateQuery)){
+			
+			System.out.println("updating patient");
 			
 			pStmt.setString(1, patient.getName());
 			pStmt.setString(2, patient.getPhoneNumber());
@@ -127,7 +129,9 @@ private Connection connection;
 			ex.printStackTrace();
 			JOptionPane.showMessageDialog(null, "Error in saving to database: "
 					+ ""+ex.getMessage());
+			return false;
 		}
+		return true;
 	}
 	
 	

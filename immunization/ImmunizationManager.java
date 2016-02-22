@@ -4,8 +4,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import javax.swing.JOptionPane;
-
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.xssf.usermodel.XSSFCreationHelper;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -13,6 +11,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import storage.PatientInfo;
+import utils.FileRunner;
 
 public class ImmunizationManager {
 
@@ -61,13 +60,6 @@ public class ImmunizationManager {
 	}
 	
 	public void openOutFile(){
-		try {
-			System.out.println(outFile.getAbsolutePath());
-			Runtime runTime= Runtime.getRuntime();
-			runTime.exec("C:\\Program Files (x86)\\OpenOffice 4\\program\\scalc.exe -show "+outFile.getAbsolutePath());
-		} catch (IOException e) {
-			JOptionPane.showMessageDialog(null, "Error in opening File: "+e.getMessage());
-			e.printStackTrace();
-		}
+		FileRunner.openExcel(outFile.getAbsolutePath());
 	}
 }

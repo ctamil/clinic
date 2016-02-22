@@ -12,7 +12,6 @@ import javax.swing.JOptionPane;
 import ds.LinkedList;
 import ds.Traveller;
 import dto.Bill;
-import dto.CustomDate;
 import dto.Item;
 
 public class StockTableProcessing extends TableProcessing{
@@ -29,15 +28,19 @@ public class StockTableProcessing extends TableProcessing{
 
 	public boolean addToDB(Item item){
 		String query = "insert into stock (item_name, qty, price, category, expire_date) values(?, ?, ?, ?, ?)";
-		try(PreparedStatement preStmt = connection.prepareStatement(query)) {
-			
-			preStmt.setString(1, item.getName());
-			preStmt.setInt(2, item.getQuantity());
-			preStmt.setFloat(3, item.getPrice());
-			preStmt.setString(4, item.getCategory());
-			preStmt.setDate(5, new Date(item.getExpireDate().getTimeInMillis()));
-			preStmt.executeUpdate();
-			
+		int oldQty = 0;
+		try {
+			if((oldQty = getItemQty(item.getName(), item.getCategory(), item.getExpireDate(), item.getPrice())) > 0) { //if item already exists
+				updateItemToDB(item, oldQty);
+			}else {
+				PreparedStatement preStmt = connection.prepareStatement(query);
+				preStmt.setString(1, item.getName());
+				preStmt.setInt(2, item.getQuantity());
+				preStmt.setFloat(3, item.getPrice());
+				preStmt.setString(4, item.getCategory());
+				preStmt.setDate(5, item.getExpireDate());
+				preStmt.executeUpdate();
+			}
 		} catch (SQLException e) {
 			JOptionPane.showMessageDialog(null, "Error in Stock table processing: "+e.getMessage());
 			e.printStackTrace();
@@ -47,26 +50,32 @@ public class StockTableProcessing extends TableProcessing{
 	}
 
 	private void updateDB(Item item) throws SQLException{
-		if(item.getQuantity() > 0) updateItemToDB(item);
+		if(item.getQuantity() > 0) updateItemToDB(item, 0);
 		else deleteItemFromDb(item);
 	}
 
-	private void updateItemToDB(Item item) throws SQLException{
-		String updateQuery = "update stock set qty = ? where item_name = ? and expire_date = ?";
+	private void updateItemToDB(Item item, int oldQty) throws SQLException{
+		String updateQuery = "update stock set qty = ? where item_name = ? and expire_date = ? and category = ? and price = ?;";
 		PreparedStatement preStmt = connection.prepareStatement(updateQuery);
-		preStmt.setInt(1, item.getQuantity());
+		preStmt.setInt(1, item.getQuantity() + oldQty);
 		preStmt.setString(2, item.getName());
-		preStmt.setDate(3, new Date(item.getExpireDate().getTimeInMillis()));
+		preStmt.setDate(3, item.getExpireDate());
+		preStmt.setString(4, item.getCategory());
+		preStmt.setFloat(5, item.getPrice());
+		
 		preStmt.executeUpdate();
 		preStmt.close();
 	}
 
 	public boolean deleteItemFromDb(Item item) {
-		String deleteQuery = "delete from stock where item_name = ? and expire_date = ?";
+		String deleteQuery = "delete from stock where item_name = ? and expire_date = ? and category = ? and price = ?";
 		try(PreparedStatement preStmt = connection.prepareStatement(deleteQuery)){
 			
 			preStmt.setString(1, item.getName());
-			preStmt.setDate(2, new Date(item.getExpireDate().getTimeInMillis()));
+			preStmt.setDate(2, item.getExpireDate());
+			preStmt.setString(3, item.getCategory());
+			preStmt.setFloat(4, item.getPrice());
+			
 			preStmt.executeUpdate();
 			
 		}catch(SQLException ex){
@@ -90,7 +99,7 @@ public class StockTableProcessing extends TableProcessing{
 			else if(orderByColumn.toLowerCase().contains("category")) query.append("category ");
 			else if(orderByColumn.toLowerCase().contains("quantity")) query.append("qty ");
 			else if(orderByColumn.toLowerCase().contains("price")) query.append("price ");
-			
+			else if(orderByColumn.toLowerCase().contains("expire")) query.append("expire_date ");
 			if(orderType == null || orderType.equals("ASC")) query.append("ASC ");
 			else  query.append("DESC ");
 		}
@@ -113,7 +122,7 @@ public class StockTableProcessing extends TableProcessing{
 				
 				item.setName(result.getString("item_name"));
 				item.setCategory(result.getString("category"));
-				item.setExpireDate(new CustomDate(result.getDate("expire_date")).getCalender());
+				item.setExpireDate(result.getDate("expire_date"));
 				item.setPrice(result.getFloat("price"));
 				item.setQuantity(result.getInt("qty"));
 				
@@ -126,13 +135,13 @@ public class StockTableProcessing extends TableProcessing{
 		return list;
 	}
 	
-	public LinkedList getexpireDatesList(String itemName){
+	public LinkedList getexpireDatesList(String itemName, String category){
 		ResultSet result = null;
 		LinkedList list = new LinkedList();
 		try(Statement stmt = connection.createStatement()) {
 			
-			result = stmt.executeQuery("select expire_date from stock where item_name = "
-					+ "'"+itemName+"'order by expire_date asc;");
+			result = stmt.executeQuery("select distinct expire_date from stock where item_name = "
+					+ "'"+itemName+"' and category = '"+category+"' order by expire_date asc;");
 
 			while(result.next()){
 				Date date = result.getDate("expire_date");
@@ -151,7 +160,7 @@ public class StockTableProcessing extends TableProcessing{
 		LinkedList list = new LinkedList();
 		try(Statement stmt = connection.createStatement()) {
 			
-			result = stmt.executeQuery("select item_name from stock where category = '"+category+"' order by item_name asc;");
+			result = stmt.executeQuery("select distinct item_name from stock where category = '"+category+"' order by item_name asc;");
 
 			while(result.next()){
 				String item = result.getString("item_name");
@@ -169,13 +178,19 @@ public class StockTableProcessing extends TableProcessing{
 	 * @param itemName
 	 * @return the qty value from stock table for the particular item.
 	 */
-	public int getItemQty(String itemName){
+	public int getItemQty(String itemName, String category, java.sql.Date date, float price){
 		ResultSet result = null;
 		int qty = 0;
-		try(Statement stmt = connection.createStatement()) {
+		String quey = "select qty from stock where item_name = ? and category = ? and expire_date = ? and price = ?;";
+		try(PreparedStatement stmt = connection.prepareStatement(quey)) {
 			
-			result = stmt.executeQuery("select qty from stock where item_name = '"+itemName+"';");
-
+			System.out.println("getItemQty: "+itemName+":"+category+":"+date);
+			stmt.setString(1, itemName);
+			stmt.setString(2, category);
+			stmt.setDate(3, date);
+			stmt.setFloat(4, price);
+			result = stmt.executeQuery();
+			
 			if(result.first())
 				qty = result.getInt("qty");
 			
@@ -190,21 +205,24 @@ public class StockTableProcessing extends TableProcessing{
 	 * @param itemName name of the item
 	 * @return returns price of the particular item from stock table;
 	 */
-	public float getItemPrice(String itemName){
+	public LinkedList getItemPrices(String itemName, String category, java.sql.Date date){
 		ResultSet result = null;
-		float qty = 0;
-		try(Statement stmt = connection.createStatement()) {
+		LinkedList list = new LinkedList();
+		String quey = "select distinct price from stock where item_name = ? and category = ? and expire_date = ?;";
+		try(PreparedStatement stmt = connection.prepareStatement(quey)) {
 			
-			result = stmt.executeQuery("select price from stock where item_name = '"+itemName+"';");
+			stmt.setString(1, itemName);
+			stmt.setString(2, category);
+			stmt.setDate(3, date);
+			result = stmt.executeQuery();
 
-			if(result.first())
-				qty = result.getFloat("price");
-			
+			while(result.next()) list.add(result.getFloat("price"));
+				
 		} catch (SQLException e) {
 			JOptionPane.showMessageDialog(null, "Error in Stock table processing: "+e.getMessage());
 			e.printStackTrace();
 		}
-		return qty;
+		return list;
 	}
 
 	/**
@@ -217,9 +235,14 @@ public class StockTableProcessing extends TableProcessing{
 		Traveller trav = bill.getItems().traveller();
 		while(trav.hasNext()){
 			Item item = (Item) trav.next();
-			Date expireDate = new Date(item.getExpireDate().getTimeInMillis()); 
-			String selectQuery = "select qty from stock where item_name = '"+item.getName()+"' and expire_date = '"+expireDate+"'";
-			try(ResultSet result= connection.createStatement().executeQuery(selectQuery)){
+			String selectQuery = "select qty from stock where item_name = ? and expire_date = ? and category = ?"
+					+ " and price = ?;";
+			try(PreparedStatement preStmt = connection.prepareStatement(selectQuery)){
+				preStmt.setString(1, item.getName());
+				preStmt.setDate(2, item.getExpireDate());
+				preStmt.setString(3, item.getCategory());
+				preStmt.setFloat(4, item.getPrice());
+				ResultSet result= preStmt.executeQuery(selectQuery);
 				if(result.first()){
 					int oldQty = result.getInt(1);
 					Item itemClone = item.clone();
@@ -237,5 +260,4 @@ public class StockTableProcessing extends TableProcessing{
 		}
 		return true;
 	}
-
 }

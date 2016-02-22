@@ -22,7 +22,7 @@ public class PatientRegisterFrame extends JFrame {
 		contentPane.setLayout(null);
 		setContentPane(contentPane);
 		
-		RegisterationPanel panel = new RegisterationPanel();
+		RegisterationPanel panel = new RegisterationPanel(this);
 		contentPane.add(panel);
 		panel.setBounds(0, 0, 800, 719);
 		

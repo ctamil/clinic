@@ -63,5 +63,26 @@ public class CategoryTableProcessing extends TableProcessing{
 		Traveller travller = categoryList().traveller();
 		while(travller.hasNext()) box.addItem(travller.next().toString());
 	}
+
+	public void addCategory() {
+		String category = JOptionPane.showInputDialog(null, "Enter the Category Name");
+		if(category != null && category.length() > 0) addToDB(category);
+	}
+
+	public void deleteCategory() {
+		String category = JOptionPane.showInputDialog(null, "Enter the Category Name");
+		if(category != null && category.length() > 0) deleteFromDB(category);
+	}
+
+	private void deleteFromDB(String category) {
+		String query = "delete from category where name = ?; ";
+		try(PreparedStatement preStmt = connection.prepareStatement(query)){
+			preStmt.setString(1, category);
+			preStmt.executeUpdate();
+		}catch (SQLException e) {
+			JOptionPane.showMessageDialog(null, "Error in category table processing: "+e.getMessage());
+			e.printStackTrace();
+		}
+	}
 	
 }

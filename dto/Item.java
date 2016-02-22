@@ -1,12 +1,10 @@
 package dto;
 
-import java.util.Calendar;
-
 public class Item implements Cloneable{
 	
 	private String name;
 	private String category;
-	private Calendar expireDate;
+	private java.sql.Date expireDate;
 	private float price;
 	private int quantity;
 	
@@ -34,15 +32,15 @@ public class Item implements Cloneable{
 		this.category = category;
 	}
 
-	public Calendar getExpireDate() {
+	public java.sql.Date getExpireDate() {
 		return expireDate;
 	}
 
-	public void setExpireDate(Calendar expireDate) {
+	public void setExpireDate(java.sql.Date expireDate) {
 		this.expireDate = expireDate;
 	}
 
-	public Item(String name, float price, int quantity, String category, Calendar expireDate) {
+	public Item(String name, float price, int quantity, String category, java.sql.Date expireDate) {
 		super();
 		setName(name);
 		setPrice(price);
@@ -50,7 +48,7 @@ public class Item implements Cloneable{
 		setCategory(category);
 		setExpireDate(expireDate);
 	}
-	public Item(String name, Calendar expireDate) {
+	public Item(String name, java.sql.Date expireDate) {
 		setExpireDate(expireDate);
 		setName(name);
 	}

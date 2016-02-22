@@ -26,7 +26,7 @@ public class PatientDetailsTableProcessing extends TableProcessing{
 
 	public boolean addToDB(PatientDetails detail){
 		String insertQuery = "INSERT into PATIENT_DETAILS (id, is_male, pin_code, "
-				+ "address, city, state, dob, notes) values(?, ?, ?, ?, ?, ?, ?, ?);";
+				+ "address, city, state, dob, notes, father_name, mother_name) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 		try(PreparedStatement stmt = connection.prepareStatement(insertQuery)){
 			
 			stmt.setString(1, detail.getId());
@@ -37,6 +37,9 @@ public class PatientDetailsTableProcessing extends TableProcessing{
 			stmt.setString(6, detail.getState());
 			stmt.setDate(7, detail.getDob());
 			stmt.setString(8, detail.getNotes());
+			stmt.setString(9, detail.getFatherName());
+			stmt.setString(10, detail.getMotherName());
+			
 			
 			stmt.executeUpdate();
 		}catch(SQLException ex){
@@ -94,10 +97,11 @@ public class PatientDetailsTableProcessing extends TableProcessing{
 		return patientDetails;
 	}
 
-	public void updateToDB(PatientDetails patientDetails) {
+	public boolean updateToDB(PatientDetails patientDetails) {
 		String updateQuery = "UPDATE patient_details set is_male = ?, "
 				+ "pin_code = ?,  address = ?, city = ?,  state = ?, "
 				+ "dob = ?, notes = ?, father_name = ?, mother_name = ? where id = ?;";
+		
 		try(PreparedStatement pStmt = connection.prepareStatement(updateQuery)){
 			
 			pStmt.setBoolean(1, patientDetails.getIsMale());
@@ -117,7 +121,9 @@ public class PatientDetailsTableProcessing extends TableProcessing{
 			ex.printStackTrace();
 			JOptionPane.showMessageDialog(null, "Error in saving to database: "
 					+ ""+ex.getMessage());
+			return false;
 		}
+		return true;
 	}
 	
 }

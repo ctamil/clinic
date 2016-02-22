@@ -9,6 +9,7 @@ import java.util.Calendar;
 
 import javax.swing.JOptionPane;
 
+import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
@@ -37,6 +38,7 @@ public class BillGenerator {
 		init(bill, outputPath, inFile);
 		addPatientDetails();
 		addItemsToBill();
+		addDocterFee();
 		addTotal();
 		try {
 			doc.write(new FileOutputStream(outFile));
@@ -47,9 +49,14 @@ public class BillGenerator {
 		return outFile;
 	}
 	
+	private static void addDocterFee(){
+		XWPFTable table = doc.getTables().get(2);
+		addToCell(""+bill.getDocterFee(), table.getRow(0).getCell(1), 10, ParagraphAlignment.RIGHT);
+	}
+	
 	private static void addTotal() {
 		XWPFTable table = doc.getTables().get(2);
-		addToCell("Amount: "+bill.getTotal(), table.getRow(0).getCell(0), 10);
+		addToCell(""+bill.getTotal(), table.getRow(1).getCell(1), 10, ParagraphAlignment.RIGHT);
 	}
 
 	/**
@@ -88,11 +95,11 @@ public class BillGenerator {
 	}
 
 	private static void addItem(int index, XWPFTableRow row, Item item){
-		addToCell(index + "" , row.getCell(0), 10);
-		addToCell(item.getName(), row.getCell(1), 10);
-		addToCell(item.getQuantity() + "" , row.getCell(2), 10);
-		addToCell(item.getPrice() + "", row.getCell(3), 10);
-		addToCell(item.getTotal() + "", row.getCell(4), 10);
+		addToCell(index + "" , row.getCell(0), 10, ParagraphAlignment.LEFT);
+		addToCell(item.getName(), row.getCell(1), 10, ParagraphAlignment.LEFT);
+		addToCell(item.getQuantity() + "" , row.getCell(2), 10, ParagraphAlignment.LEFT);
+		addToCell(item.getPrice() + "", row.getCell(3), 10, ParagraphAlignment.LEFT);
+		addToCell(item.getTotal() + "", row.getCell(4), 10, ParagraphAlignment.RIGHT);
 	}
 	/*
 	 * Adding patient details to  bill.
@@ -107,14 +114,16 @@ public class BillGenerator {
 		int month = currCal.get(Calendar.MONTH);
 		int year = currCal.get(Calendar.YEAR);
 		
-		addToCell(bill.getBillNo() + "", firstRow.getCell(0), 10);
-		addToCell(bill.getPatient().getId(), firstRow.getCell(1), 10);
-		addToCell(bill.getPatient().getName(), secondRow.getCell(0), 10);
-		addToCell(date + "." + month + "." + year, secondRow.getCell(1), 10);
+		addToCell("Bill no: "+bill.getBillNo() + "", firstRow.getCell(0), 10, ParagraphAlignment.LEFT);
+		addToCell("ID: "+bill.getPatient().getId(), firstRow.getCell(1), 10, ParagraphAlignment.LEFT);
+		addToCell("Name: "+bill.getPatient().getName(), secondRow.getCell(0), 10, ParagraphAlignment.LEFT);
+		addToCell("Date: "+date + "." + month + "." + year, secondRow.getCell(1), 10, ParagraphAlignment.LEFT);
 	}
 	
-	private static void addToCell(String text, XWPFTableCell cell, int fontSize){
+	private static void addToCell(String text, XWPFTableCell cell, int fontSize, ParagraphAlignment align){
 		XWPFParagraph para = cell.addParagraph();
+		cell.setParagraph(para);
+		para.setAlignment(align);
 		XWPFRun run = para.createRun();
 		run.setText(text);
 		run.setFontSize(fontSize);

@@ -12,7 +12,6 @@ import javax.swing.JButton;
 import javax.swing.KeyStroke;
 
 import java.awt.event.ActionListener;
-import java.util.Calendar;
 import java.awt.event.ActionEvent;
 
 import javax.swing.event.CaretListener;
@@ -24,6 +23,7 @@ import dto.Item;
 
 import java.awt.Font;
 import javax.swing.JComboBox;
+import java.awt.Color;
 
 public class AddStockPanel extends JPanel implements ActionListener {
 
@@ -34,10 +34,11 @@ public class AddStockPanel extends JPanel implements ActionListener {
 	private JTextField txtItem;
 	private JTextField txtPrice;
 	private JTextField txtQuantity;
-	private JTextField txtTotal;
+	private JLabel lblTotal;
 	private DatePanel datePanel;
 	private JComboBox<String> comboBox;
 	private CategoryTableProcessing categoryTable;
+	private JLabel lblTotal_1;
 	
 	/**
 	 * Create the frame.
@@ -61,22 +62,12 @@ public class AddStockPanel extends JPanel implements ActionListener {
 		panel.add(txtItem);
 		txtItem.setColumns(10);
 		
-		JLabel lblPrice = new JLabel("Price: ");
-		lblPrice.setBounds(10, 206, 104, 14);
+		JLabel lblPrice = new JLabel("Price per item: ");
+		lblPrice.setBounds(10, 233, 104, 14);
 		panel.add(lblPrice);
 		
-		txtPrice = new JTextField();
-		txtPrice.addCaretListener(new CaretListener() {
-			public void caretUpdate(CaretEvent arg0) {
-				updateTotal();
-			}
-		});
-		txtPrice.setBounds(157, 203, 305, 20);
-		panel.add(txtPrice);
-		txtPrice.setColumns(10);
-		
 		JLabel lblQuantity = new JLabel("Quantity: ");
-		lblQuantity.setBounds(10, 236, 104, 14);
+		lblQuantity.setBounds(10, 205, 104, 14);
 		panel.add(lblQuantity);
 		
 		JLabel lblTotal = new JLabel("Total: ");
@@ -89,11 +80,21 @@ public class AddStockPanel extends JPanel implements ActionListener {
 				updateTotal();
 			}
 		});
-		txtQuantity.setBounds(157, 233, 305, 20);
+		txtQuantity.setBounds(157, 202, 305, 20);
 		panel.add(txtQuantity);
 		txtQuantity.setColumns(10);
-		txtQuantity.getInputMap().put(KeyStroke.getKeyStroke("ENTER"), "ENTER");
-		txtQuantity.getActionMap().put("ENTER", new AbstractAction() {
+		
+		txtPrice = new JTextField();
+		txtPrice.addCaretListener(new CaretListener() {
+			public void caretUpdate(CaretEvent arg0) {
+				updateTotal();
+			}
+		});
+		txtPrice.setBounds(157, 230, 305, 20);
+		panel.add(txtPrice);
+		txtPrice.setColumns(10);
+		txtPrice.getInputMap().put(KeyStroke.getKeyStroke("ENTER"), "ENTER");
+		txtPrice.getActionMap().put("ENTER", new AbstractAction() {
 			private static final long serialVersionUID = 5537910194302150408L;
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -101,12 +102,12 @@ public class AddStockPanel extends JPanel implements ActionListener {
 			}
 		});
 		
-		txtTotal = new JTextField();
-		txtTotal.setText("0.0");
-		txtTotal.setBounds(157, 269, 305, 20);
-		panel.add(txtTotal);
-		txtTotal.setColumns(10);
-		txtTotal.setEnabled(false);
+		lblTotal_1 = new JLabel();
+		lblTotal_1.setForeground(Color.RED);
+		lblTotal_1.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lblTotal_1.setText("0.0");
+		lblTotal_1.setBounds(157, 269, 305, 33);
+		panel.add(lblTotal_1);
 		
 		JButton btnAdd = new JButton("Add");
 		btnAdd.addActionListener(this);
@@ -143,11 +144,8 @@ public class AddStockPanel extends JPanel implements ActionListener {
 		JButton btnNew = new JButton("New");
 		btnNew.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				String category = JOptionPane.showInputDialog(comboBox, "Enter the Category Name");
-				if(category != null && category.length() > 0) {
-					categoryTable.addToDB(category);
-					categoryTable.updateCategory(comboBox);
-				}
+				categoryTable.addCategory();
+				categoryTable.updateCategory(comboBox);
 			}
 		});
 		btnNew.setBounds(369, 73, 93, 23);
@@ -158,7 +156,7 @@ public class AddStockPanel extends JPanel implements ActionListener {
 		txtItem.setText(null);
 		txtPrice.setText(null);
 		txtQuantity.setText(null);
-		txtTotal.setText(String.valueOf(0.0));
+		lblTotal.setText(String.valueOf(0.0));
 		datePanel.reset();
 		categoryTable.updateCategory(comboBox);
 	}
@@ -170,8 +168,7 @@ public class AddStockPanel extends JPanel implements ActionListener {
 				String name = txtItem.getText().trim().toLowerCase();
 				float price = Float.parseFloat(txtPrice.getText().trim());
 				int qty = Integer.parseInt(txtQuantity.getText().trim());
-				Calendar date = datePanel.getCalender();
-				
+				java.sql.Date date = datePanel.getDate().getSQLDate();
 				if(new StockTableProcessing().addToDB(new Item(name, price, qty, category, date))) { //if completed adding to database;
 					JOptionPane.showMessageDialog(this, "Stock Added.");
 					reset(); 
@@ -189,7 +186,7 @@ public class AddStockPanel extends JPanel implements ActionListener {
 		if(txtItem.getText() == null || txtItem.getText().trim().length()<1) return false;
 		if(txtPrice.getText() == null || txtPrice.getText().trim().length()<1) return false;
 		if(txtQuantity.getText() == null || txtQuantity.getText().trim().length()<1) return false;
-		if(txtTotal.getText() == null || txtTotal.getText().trim().length()<1) return false;
+		if(lblTotal.getText() == null || lblTotal.getText().trim().length()<1) return false;
 		if(comboBox.getSelectedItem() == null) return false;
 		return true;
 	}
@@ -200,7 +197,7 @@ public class AddStockPanel extends JPanel implements ActionListener {
 				float price = Float.parseFloat(txtPrice.getText().trim());
 				float qty = Integer.parseInt(txtQuantity.getText().trim());
 				float total = price * qty;
-				txtTotal.setText(String.valueOf(total));
+				lblTotal.setText(String.valueOf(total));
 			}catch(NumberFormatException | NullPointerException exp){
 				System.err.println(exp.getMessage());
 			}

@@ -109,10 +109,13 @@ public class PatientInfo {
 		else return searchPatientByName(key);
 	}
 
-	public void update(Patient patient, PatientDetails patientDetails) {
+	public boolean update(Patient patient, PatientDetails patientDetails) {
 		((Container)patientsKeyAsPhoneNumber).remove(patient.getPhoneNumber());
-		patientTable.updateToDB(patient);
-		patientDetailsTable.updateToDB(patientDetails);
+		((Container)patientsKeyAsId).remove(patient.getPhoneNumber());
+		boolean v1 = patientTable.updateToDB(patient);
+		boolean v2 = patientDetailsTable.updateToDB(patientDetails);
 		patientsKeyAsPhoneNumber.add(patient, patient.getPhoneNumber());
+		patientsKeyAsId.add(patient, patient.getId());
+		return v1 && v2;
 	}
 }

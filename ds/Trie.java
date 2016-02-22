@@ -7,7 +7,7 @@ public class Trie implements Container, PrefixSearch{
 	
 	private class Node{
 		private boolean isPresent = false;
-		private Object data;
+		private Object data; //to store user data.
 		private Node next[] = new Node[R];
 	}
 	
@@ -107,6 +107,7 @@ public class Trie implements Container, PrefixSearch{
 		if(string.length() == stringIndex+1){
 			if(next.next[nodeIndex] != null && next.next[nodeIndex].isPresent == true){
 				next.next[nodeIndex].isPresent = false;
+				next.next[nodeIndex].data = null;
 				size--;
 			}
 		}else remove(string, stringIndex+1, next.next[nodeIndex]);

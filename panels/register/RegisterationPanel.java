@@ -1,12 +1,17 @@
 package panels.register;
 
 import javax.swing.JPanel;
+
 import java.awt.BorderLayout;
+
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import java.awt.Font;
+
 import javax.swing.JButton;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
@@ -17,7 +22,7 @@ public class RegisterationPanel extends JPanel {
 	private JButton btnReset;
 	private JButton btnRegister;
 
-	public RegisterationPanel() {
+	public RegisterationPanel(final JFrame parentFrame) {
 		
 		setLayout(new BorderLayout(0, 0));
 		JPanel panel = new JPanel();
@@ -34,6 +39,7 @@ public class RegisterationPanel extends JPanel {
 			public void actionPerformed(ActionEvent arg0) {
 				if(registerationDetailsPanel.register()){
 					registerationDetailsPanel.reset();
+					parentFrame.dispose();
 				}else JOptionPane.showMessageDialog(null, "Registration Not Completed");
 			}
 		});

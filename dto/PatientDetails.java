@@ -1,8 +1,6 @@
 package dto;
 
 import java.sql.Date;
-import java.time.LocalDate;
-import java.util.Calendar;
 
 public class PatientDetails {
 
@@ -14,10 +12,9 @@ public class PatientDetails {
 	private String address;
 	private String city;
 	private String state;
-	private Calendar dob;
+	private java.sql.Date dob;
 	private int age;
 	private String notes;
-	
 	
 	public String getId() {
 		return id;
@@ -54,29 +51,18 @@ public class PatientDetails {
 		return age;
 	}
 	public Date getDob(){
-		Date date = new Date(dob.getTimeInMillis());
-		return date;
+		return dob;
 	}
-	public void setDob(java.sql.Date date){
-		LocalDate localDate = date.toLocalDate();
-		setDob(localDate.getDayOfMonth(), localDate.getMonthValue(), localDate.getYear());
-	}
-	public void setDob(int date, int month, int year){
-		Calendar cal = Calendar.getInstance();
-		cal.set(Calendar.DATE, date);
-		cal.set(Calendar.MONTH, month);
-		cal.set(Calendar.YEAR, year);
-		setDob(cal);
-	}
-	public void setDob(Calendar dob){
-		if(dob == null) return;
+	
+	@SuppressWarnings("deprecation")
+	public void setDob(java.sql.Date dob){
+		calculateAge(new java.util.Date().getYear(), dob.getYear());
 		this.dob = dob;
-		calculateAge(Calendar.getInstance().get(Calendar.YEAR), dob.get(Calendar.YEAR));
 	}
+	
 	private void calculateAge(int currYear, int dobYear) {
 		age = currYear - dobYear;
 	}
-	
 	public String getPinCode() {
 		return pinCode;
 	}

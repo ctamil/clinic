@@ -18,11 +18,11 @@ public class PatientEditFrame extends JFrame {
 	private static final long serialVersionUID = -7048120901151460017L;
 	private JPanel contentPane;
 	private RegisterationDetailsPanel regDetailsPanel;
-
+	
 	/**
 	 * Create the frame.
 	 */
-	public PatientEditFrame(Patient patient, PatientDetails patientDetails) {
+	public PatientEditFrame(final Patient patient, PatientDetails patientDetails) {
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 774, 638);
 		contentPane = new JPanel();
@@ -41,7 +41,7 @@ public class PatientEditFrame extends JFrame {
 		JButton btnUpdate = new JButton("Update");
 		btnUpdate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				regDetailsPanel.update();
+				if(regDetailsPanel.update(patient.getId())) dispose();
 			}
 		});
 		btnUpdate.setBounds(10, 551, 150, 23);

@@ -21,16 +21,23 @@ public class Bill {
 	private User user;
 	private float docterFee;
 	
-	
-	
-	public Bill(long billNo, String file, Date date, User user) {
+	public Bill(User user){
 		super();
+		items = new LinkedList();
+		setUser(user);
+	}
+	public Bill(long billNo, String file, Date date, User user) {
+		this(user);
 		this.billNo = billNo;
 		this.file = file;
 		this.date = date;
-		this.user = user;
 	}
-	
+	public Bill(Patient patient, User user, long billNo, float docterFee) {
+		this(user);
+		setPatient(patient);
+		setBillNo(billNo);
+		setDocterFee(docterFee);
+	}
 	public String getFile() {
 		return file;
 	}
@@ -48,14 +55,9 @@ public class Bill {
 		return docterFee;
 	}
 	public void setDocterFee(float docterFee) {
-		this.docterFee = docterFee;
-	}
-	public Bill(Patient patient, User user, long billNo, float docterFee) {
-		items = new LinkedList();
-		setPatient(patient);
-		setUser(user);
-		setBillNo(billNo);
-		setDocterFee(docterFee);
+		total -= this.docterFee; //removing previous doctor fee
+		total += docterFee; //adding new Doctor fee
+		this.docterFee = docterFee; //update doctor fee.
 	}
 	public void removeItem(Item item){
 		items.remove(item);

@@ -18,7 +18,6 @@ import dto.Item;
 import javax.swing.JButton;
 
 import java.awt.event.ActionListener;
-import java.util.Calendar;
 import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
 import java.awt.event.FocusAdapter;
@@ -38,7 +37,7 @@ public class AvailableStockPanel extends JPanel {
 	private JComboBox<String> orderTypecomboBox;
 
 	public AvailableStockPanel() {
-		setBounds(100, 100, 798, 573);
+		setBounds(100, 100, 798, 630);
 		setBorder(new EmptyBorder(5, 5, 5, 5));
 		setLayout(new BorderLayout(0, 0));
 		
@@ -53,14 +52,14 @@ public class AvailableStockPanel extends JPanel {
 		panel.setLayout(null);
 		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 90, 778, 412);
+		scrollPane.setBounds(10, 90, 778, 455);
 		panel.add(scrollPane, BorderLayout.CENTER);
 		
 		table = new JTable();
 		scrollPane.setViewportView(table);
 		
 		JPanel panel_1 = new JPanel();
-		panel_1.setBounds(10, 500, 723, 53);
+		panel_1.setBounds(10, 545, 768, 53);
 		panel.add(panel_1);
 		panel_1.setLayout(null);
 		
@@ -101,7 +100,7 @@ public class AvailableStockPanel extends JPanel {
 		panel.add(lblOrderBy);
 		
 		orderByComboBox = new JComboBox<>();
-		orderByComboBox.setModel(new DefaultComboBoxModel<String>(new String[] {"Item Name", "Category", "Quantity", "Price"}));
+		orderByComboBox.setModel(new DefaultComboBoxModel<String>(new String[] {"Item Name", "Category", "Quantity", "Price", "Expire Date"}));
 		orderByComboBox.setBounds(113, 48, 218, 20);
 		panel.add(orderByComboBox);
 		
@@ -130,7 +129,7 @@ public class AvailableStockPanel extends JPanel {
 			return;
 		}
 		String name = table.getValueAt(row, 0).toString(); //first column.
-		Calendar expireDate = new CustomDate(table.getValueAt(row, 2).toString()).getCalender(); //third column contains expire date.
+		java.sql.Date expireDate = new CustomDate(table.getValueAt(row, 2).toString()).getSQLDate(); //third column contains expire date.
 		Item item = new Item(name, expireDate);
 		new StockTableProcessing().deleteItemFromDb(item);
 		fillTable();

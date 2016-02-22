@@ -37,7 +37,7 @@ public class AddUser extends JFrame {
 	public AddUser() {
 		userTable = new UserTableProcessing();
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 450, 249);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
@@ -86,11 +86,11 @@ public class AddUser extends JFrame {
 		panel.add(lblUserRole);
 		
 		rdbtnAdmin = new JRadioButton("Admin");
-		rdbtnAdmin.setBounds(166, 121, 55, 23);
+		rdbtnAdmin.setBounds(166, 121, 79, 23);
 		panel.add(rdbtnAdmin);
 		
 		rdbtnManger = new JRadioButton("Manger");
-		rdbtnManger.setBounds(229, 121, 109, 23);
+		rdbtnManger.setBounds(256, 121, 109, 23);
 		panel.add(rdbtnManger);
 		role = new ButtonGroup();
 		role.add(rdbtnAdmin);

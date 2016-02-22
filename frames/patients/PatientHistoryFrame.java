@@ -14,9 +14,18 @@ import dto.Bill;
 import dto.CustomDate;
 
 import javax.swing.JLabel;
+
 import java.awt.Font;
+
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JButton;
+
+import utils.FileRunner;
+import utils.LocalNetworkFileSearch;
+
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class PatientHistoryFrame extends JFrame {
 
@@ -35,7 +44,7 @@ public class PatientHistoryFrame extends JFrame {
 	public PatientHistoryFrame(String patientId) {
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		billTable = new BillTableProcessing();
-		setBounds(100, 100, 767, 498);
+		setBounds(100, 100, 767, 531);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
@@ -60,6 +69,25 @@ public class PatientHistoryFrame extends JFrame {
 		
 		table = new JTable();
 		scrollPane.setViewportView(table);
+		
+		JButton btnViewBill = new JButton("View Bill");
+		btnViewBill.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				openBill();
+			}
+			private void openBill() {
+				if(table.getSelectedRow() > -1) {
+					String filePath = table.getValueAt(table.getSelectedRow(), 2).toString();
+					if(!FileRunner.openWord(filePath)){ //if not exits search in network drivers.
+						String subPath = filePath.substring(filePath.indexOf("Cli"), filePath.length()); //taking only the sub path because 
+						//ClinicManagement folder only is shared so path frm that is only needed to search.
+						LocalNetworkFileSearch.find(subPath);
+					}
+				}
+			}
+		});
+		btnViewBill.setBounds(10, 453, 123, 23);
+		panel.add(btnViewBill);
 		fillTable(patientId);
 	}
 
@@ -73,6 +101,7 @@ public class PatientHistoryFrame extends JFrame {
 			table.setValueAt(bill.getBillNo(), row, 0);
 			table.setValueAt(new CustomDate(bill.getDate()), row, 1);
 			table.setValueAt(bill.getFile(), row, 2);
+			row++;
 		}
 	}
 }

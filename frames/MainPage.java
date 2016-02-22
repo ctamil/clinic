@@ -18,6 +18,9 @@ import storage.UserInfo;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+
+import database.CategoryTableProcessing;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
@@ -32,7 +35,7 @@ public class MainPage extends JFrame {
 	public MainPage() {
 		setIconImage(new ImageIcon(System.getProperty("user.dir")+"\\logo.png").getImage());
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(0, 0, 800, 719);
+		setBounds(0, 0, 881, 719);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
@@ -46,10 +49,10 @@ public class MainPage extends JFrame {
 		panel.add(tabbedPane);
 		tabbedPane.add("Patient Search", new PatientSearchPanel());
 		tabbedPane.add("Billing", new BillingPanel());
-		tabbedPane.setBounds(0, 32, 774, 628);
+		tabbedPane.setBounds(0, 32, 807, 628);
 		
 		menuBar = new JMenuBar();
-		menuBar.setBounds(0, 0, 774, 21);
+		menuBar.setBounds(0, 0, 855, 21);
 		panel.add(menuBar);
 		
 		JMenu mnFile = new JMenu("Menu");
@@ -80,6 +83,34 @@ public class MainPage extends JFrame {
 			}
 		});
 		mnFile.add(mntmAddStock);
+		
+		JMenuItem mntmLogout = new JMenuItem("Logout");
+		mntmLogout.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				new LoginPage().setVisible(true);
+				dispose();
+			}
+		});
+		mnFile.add(mntmLogout);
+		
+		JMenu mnCategory = new JMenu("Category");
+		menuBar.add(mnCategory);
+		
+		JMenuItem mntmAdd = new JMenuItem("Add");
+		mntmAdd.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				new CategoryTableProcessing().addCategory();
+			}
+		});
+		mnCategory.add(mntmAdd);
+		
+		JMenuItem mntmDelete = new JMenuItem("Delete");
+		mntmDelete.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				new CategoryTableProcessing().deleteCategory();
+			}
+		});
+		mnCategory.add(mntmDelete);
 		if(UserInfo.getUser().isAdmin()) addAdminContents();
 	}
 
@@ -108,5 +139,4 @@ public class MainPage extends JFrame {
 		});
 		mnUser.add(mntmViewUsers);
 	}
-
 }

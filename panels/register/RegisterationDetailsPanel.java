@@ -182,29 +182,35 @@ public class RegisterationDetailsPanel extends JPanel {
 		datePanel.reset();
 		txtContact.setText("");
 		textAddress.setText("");
+		textInfo.setText("");
 		txtCity.setText("");
 		txtState.setText("");
 		txtPinCode.setText("");
 	}
 	
-	public void update(){
-		if(!isValidUserData()) return;
-		Patient patient = getPatient();
+	public boolean update(String regId){
+		if(!isValidUserData()) return false;
+		Patient patient = getPatient(regId);
 		PatientDetails patientDetails = getPatientDetails(patient);
-		PatientInfo.getInstance().update(patient, patientDetails);
+		return PatientInfo.getInstance().update(patient, patientDetails);
 	}
 	
 	public boolean register() {
 		if(!isValidUserData()) return false;
-		Patient patient = getPatient();
+		
+		String contact = txtContact.getText().trim();
+		if(PatientInfo.getInstance().contains(contact)) return returnFalseWithMessage("Number is already registered in system.");
+		
+		Patient patient = getPatient(null);
 		PatientDetails patientDetails = getPatientDetails(patient);
 		JOptionPane.showMessageDialog(this, "Registeration ID: "+patient.getId());
 		return PatientInfo.getInstance().add(patient, patientDetails);
 	}
 	
-	private Patient getPatient(){
+	private Patient getPatient(String regId){
 		Patient patient = new Patient();
-		patient.setId(new PatientTableProcessing().getNextId());
+		if(regId == null) patient.setId(new PatientTableProcessing().getNextId()); //create new reg id.
+		else patient.setId(regId);
 		patient.setName(txtName.getText().trim());
 		patient.setPhoneNumber(txtContact.getText());
 		return patient;
@@ -215,7 +221,7 @@ public class RegisterationDetailsPanel extends JPanel {
 		patientDetails.setId(patient.getId());
 		if(rdbtnMale.isSelected()) patientDetails.setIsMale(true);
 		else if(rdbtnFemale.isSelected()) patientDetails.setIsMale(false);
-		patientDetails.setDob(datePanel.getCalender());
+		patientDetails.setDob(datePanel.getDate().getSQLDate());
 		patientDetails.setFatherName(txtFather.getText());
 		patientDetails.setMotherName(txtMother.getText());
 		patientDetails.setState(txtState.getText());
@@ -229,7 +235,7 @@ public class RegisterationDetailsPanel extends JPanel {
 	private boolean isValidUserData() {
 		if(txtName.getText() == null || txtName.getText().length() < 1) return returnFalseWithMessage("Enter patient name");
 		
-		Calendar date = datePanel.getCalender();
+		Calendar date = datePanel.getDate().getCalenderDate();
 		if(date == null || Calendar.getInstance().compareTo(date) <= 0) return returnFalseWithMessage("Enter valid date");   
 		
 		String contact = txtContact.getText();
@@ -237,7 +243,6 @@ public class RegisterationDetailsPanel extends JPanel {
 		contact = contact.trim();
 		Pattern contactPattern = Pattern.compile("^[1-9][0-9]{9}$");
 		if(!contactPattern.matcher(contact.trim()).find()) return returnFalseWithMessage("Found Invalid Contact number");
-		if(PatientInfo.getInstance().contains(contact)) return returnFalseWithMessage("Number is already registered in system.");
 
 		return true;
 	}
